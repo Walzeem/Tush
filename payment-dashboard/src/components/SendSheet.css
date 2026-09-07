@@ -1,0 +1,113 @@
+/* ─── SendSheet ──────────────────────────────────────────────────────────── */
+
+.send-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.send-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.send-field__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted, #888);
+}
+
+.send-destination {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 15px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #141416;
+  color: var(--text-primary, #fff);
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.send-destination::placeholder {
+  color: var(--text-muted, #888);
+}
+
+.send-destination:focus {
+  outline: none;
+  border-color: var(--accent-neon, #00f0ff);
+  box-shadow: 0 0 0 3px var(--ring, rgba(0, 240, 255, 0.2));
+}
+
+/* Amount readout driven by the keypad below. */
+.send-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 0 4px;
+}
+
+.send-amount__value {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text-primary, #fff);
+}
+
+.send-amount__value.is-empty {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.send-amount__unit {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-muted, #888);
+}
+
+.send-amount__fiat {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted, #888);
+}
+
+.send-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.send-keypad button {
+  padding: 16px 0;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #141416;
+  color: var(--text-primary, #fff);
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.send-keypad button:hover {
+  background: var(--bg-card-hover, #222222);
+}
+
+.send-keypad button:active {
+  transform: scale(0.96);
+}
+
+.send-keypad button:focus-visible {
+  outline: none;
+  border-color: var(--accent-neon, #00f0ff);
+}
+
+.send-keypad__key--action {
+  color: var(--text-muted, #888) !important;
+}

@@ -1,0 +1,161 @@
+/* ─── BottomSheet ────────────────────────────────────────────────────────
+   Reusable slide-up sheet. The scrim and the sheet stay mounted so the
+   open/close transitions are driven entirely by CSS class changes.
+   ──────────────────────────────────────────────────────────────────────── */
+
+.sheet-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  border: none;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+
+.sheet-scrim.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.bottom-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  /* Match the phone frame in WalletLayout.css rather than the viewport. */
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 0 20px 24px;
+  background: var(--bg-main, #0a0a0a);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: none;
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -18px 50px rgba(0, 0, 0, 0.65);
+  transform: translateY(100%);
+  visibility: hidden;
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1),
+    visibility 0.32s ease;
+}
+
+.bottom-sheet.is-open {
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.bottom-sheet:focus {
+  outline: none;
+}
+
+/* Decorative grab affordance. The sheet is not drag-dismissable yet. */
+.bottom-sheet__handle {
+  flex-shrink: 0;
+  width: 40px;
+  height: 4px;
+  margin: 12px auto 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.bottom-sheet__header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0 14px;
+}
+
+.bottom-sheet__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary, #fff);
+}
+
+.bottom-sheet__close {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted, #888);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.bottom-sheet__close:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text-primary, #fff);
+}
+
+.bottom-sheet__close svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  fill: none;
+}
+
+.bottom-sheet__body {
+  min-height: 0;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.bottom-sheet__body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Shared pill CTA used by the Send and Swap sheets. */
+.sheet-cta {
+  flex-shrink: 0;
+  width: 100%;
+  margin-top: 16px;
+  padding: 16px 0;
+  border: none;
+  border-radius: var(--radius-pill, 50px);
+  background: var(--accent-neon, #00f0ff);
+  color: #04191c;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.sheet-cta:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.sheet-cta:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+.sheet-cta:disabled {
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--text-muted, #888);
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet-scrim,
+  .bottom-sheet {
+    transition-duration: 0.01ms;
+  }
+}

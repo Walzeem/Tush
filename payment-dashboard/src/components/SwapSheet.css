@@ -1,0 +1,187 @@
+/* ─── SwapSheet ──────────────────────────────────────────────────────────── */
+
+.swap-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Positioned wrapper so the switcher can straddle the gap between cards. */
+.swap-cards {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.swap-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #141416;
+}
+
+.swap-card__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted, #888);
+}
+
+.swap-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Asset selector chip: token dot + symbol + chevron. */
+.swap-asset-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 8px 12px 8px 8px;
+  border-radius: var(--radius-pill, 50px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary, #fff);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.swap-asset-chip:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.swap-asset-chip__icon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.swap-asset-chip__icon--xlm {
+  background: radial-gradient(circle at 30% 30%, #2dd4bf, #0f766e);
+}
+
+.swap-asset-chip__icon--usdc {
+  background: radial-gradient(circle at 30% 30%, #4ade80, #2563eb);
+}
+
+.swap-asset-chip__chevron {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  stroke: var(--text-muted, #888);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.swap-amount-input {
+  min-width: 0;
+  flex: 1;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-primary, #fff);
+  font-family: inherit;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: right;
+}
+
+.swap-amount-input::placeholder {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.swap-amount-input:focus {
+  outline: none;
+}
+
+/* Hide the number-input spinners so the field reads as plain text. */
+.swap-amount-input::-webkit-outer-spin-button,
+.swap-amount-input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.swap-amount-input[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.swap-amount-output {
+  flex: 1;
+  min-width: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: right;
+  color: var(--text-primary, #fff);
+}
+
+.swap-amount-output.is-empty {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.swap-card__balance {
+  font-size: 0.75rem;
+  color: var(--text-muted, #888);
+}
+
+/* Straddles the seam between the two cards. The 8px card gap plus half the
+   button height keeps it visually centred on the border. */
+.swap-switcher {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  border: 4px solid var(--bg-main, #0a0a0a);
+  background: var(--bg-card-hover, #222222);
+  color: var(--text-primary, #fff);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.swap-switcher:hover {
+  background: #2e2e2e;
+}
+
+.swap-switcher:active {
+  transform: translate(-50%, -50%) scale(0.92);
+}
+
+.swap-rate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px;
+  font-size: 0.75rem;
+  color: var(--text-muted, #888);
+}
+
+.swap-rate__value {
+  color: rgba(255, 255, 255, 0.72);
+}

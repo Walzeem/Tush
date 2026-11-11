@@ -1,0 +1,54 @@
+.vault-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.vault-dialog {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+  border-radius: 20px;
+  background: #14161c;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.vault-dialog h2 { margin: 0; font-size: 1.25rem; }
+.vault-dialog p { margin: 0; color: #9ca3af; font-size: 0.875rem; line-height: 1.4; }
+
+.vault-dialog input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+}
+.vault-dialog input:focus { border-color: var(--accent-neon, #00f0ff); }
+
+.vault-error { color: #ea4335; font-size: 0.85rem; }
+
+.vault-primary,
+.vault-secondary {
+  border-radius: 100px;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+}
+.vault-primary { background: var(--accent-neon, #00f0ff); color: #000; }
+.vault-secondary { background: transparent; color: #9ca3af; font-weight: 600; }
+.vault-primary:disabled, .vault-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+

@@ -1,0 +1,122 @@
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  padding: 0 16px;
+}
+
+.history-title-group h2 {
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: #ffffff;
+}
+
+.history-title-group p {
+  margin: 0;
+  color: #888888;
+  font-size: 0.9rem;
+}
+
+.history-pills {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.pill-testnet {
+  background: rgba(0, 240, 255, 0.1);
+  color: var(--accent-neon, #00f0ff);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+}
+
+.pill-tag {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.history-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  border: 1px solid #2a2a2a;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.history-row:hover {
+  background: #222222;
+  transform: translateY(-1px);
+  cursor: pointer;
+}
+
+.history-row-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.history-icon {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.history-icon.received {
+  color: #34A853; /* Neon green */
+}
+
+.history-icon.sent {
+  color: #FF5252; /* Red/Orange */
+}
+
+.history-counterparty {
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  font-weight: bold;
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.history-date {
+  font-size: 0.8rem;
+  color: #888888;
+  margin-top: 4px;
+}
+
+.history-row-right {
+  text-align: right;
+}
+
+.history-amount {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.history-amount.received {
+  color: #34A853;
+}
+
+.history-amount.sent {
+  color: #FF5252;
+}
+
+.history-asset {
+  font-size: 0.85rem;
+  color: #888888;
+  margin-top: 4px;
+}

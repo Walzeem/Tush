@@ -1,0 +1,31 @@
+.send-modal {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 24px;
+}
+
+.send-input-destination {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.send-status-div {
+  margin-bottom: 40px;
+}
+
+.send-input-destination::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.send-amount-display {
+  font-size: 4rem;
+  font-weight: 800;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 48px;
+}

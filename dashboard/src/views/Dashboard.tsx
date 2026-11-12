@@ -772,42 +772,6 @@ function Dashboard({
         <section className="topbar reveal wallet-app-bar">
           <div className="topbar-brand-group">
             <TushLogo size="sm" subtitle="Smart Wallet" onClick={onLandingClick} />
-            <nav className="desktop-nav-pills" aria-label="Desktop navigation">
-              <button
-                type="button"
-                className={`desktop-nav-pill ${portfolioTab !== 'nfts' ? 'is-active' : ''}`}
-                onClick={() => {
-                  setPortfolioTab('tokens');
-                  window.location.hash = 'dashboard';
-                }}
-              >
-                Home
-              </button>
-              <button
-                type="button"
-                className={`desktop-nav-pill ${portfolioTab === 'nfts' ? 'is-active' : ''}`}
-                onClick={() => {
-                  setPortfolioTab('nfts');
-                  window.location.hash = 'nfts';
-                }}
-              >
-                NFTs
-              </button>
-              <button type="button" className="desktop-nav-pill" onClick={onAnalyticsClick}>
-                Apps
-              </button>
-              <button type="button" className="desktop-nav-pill" onClick={onHistoryClick}>
-                Activity
-              </button>
-              <button type="button" className="desktop-nav-pill" onClick={onHelpClick}>
-                Support
-              </button>
-              {onLandingClick && (
-                <button type="button" className="desktop-nav-pill desktop-nav-pill--accent" onClick={onLandingClick}>
-                  ✦ Landing
-                </button>
-              )}
-            </nav>
           </div>
           <div className="topbar-actions">
             <div className="header-actions-row">

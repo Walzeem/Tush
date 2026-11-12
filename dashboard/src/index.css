@@ -1028,3 +1028,26 @@ body::before {
     justify-content: space-between;
   }
 }
+
+.landing-link-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  margin: 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  color: #040711;
+  background: linear-gradient(135deg, #00f0ff 0%, #38bdf8 55%, #8b5cf6 100%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 6px 18px rgba(0, 240, 255, 0.25);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.landing-link-pill:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}

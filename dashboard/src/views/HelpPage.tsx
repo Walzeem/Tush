@@ -110,35 +110,6 @@ function HelpPage({
         <section className="topbar reveal wallet-app-bar">
           <div className="topbar-brand-group">
             <TushLogo size="sm" subtitle="Smart Wallet" onClick={onLandingClick || onDashboardClick} />
-            <nav className="desktop-nav-pills" aria-label="Desktop navigation">
-              <button type="button" className="desktop-nav-pill" onClick={onDashboardClick}>
-                Home
-              </button>
-              <button
-                type="button"
-                className="desktop-nav-pill"
-                onClick={() => {
-                  window.location.hash = 'nfts';
-                  onDashboardClick();
-                }}
-              >
-                NFTs
-              </button>
-              <button type="button" className="desktop-nav-pill" onClick={onAnalyticsClick}>
-                Apps
-              </button>
-              <button type="button" className="desktop-nav-pill" onClick={onHistoryClick}>
-                Activity
-              </button>
-              <button type="button" className="desktop-nav-pill is-active">
-                Support
-              </button>
-              {onLandingClick && (
-                <button type="button" className="desktop-nav-pill desktop-nav-pill--accent" onClick={onLandingClick}>
-                  ✦ Landing
-                </button>
-              )}
-            </nav>
           </div>
           <div className="topbar-actions">
             <NetworkBadge />

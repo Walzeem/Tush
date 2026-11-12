@@ -10,14 +10,11 @@ import {
   ANALYTICS_WINDOW_MS,
   HORIZON_BASE,
   NAV_STORAGE_KEY,
-  formatShortAddress,
   useNavState,
-  useWalletMenu,
 } from './shared';
 
 function AnalyticsPage({
   userPublicKey,
-  onConnectWallet,
   onDisconnectWallet,
   onDashboardClick,
   onHistoryClick,
@@ -27,17 +24,11 @@ function AnalyticsPage({
   canRegister,
 }: any) {
   const [isNavOpen, setIsNavOpen] = useNavState();
-  const [isConnecting, setIsConnecting] = useState(false);
   const [analyticsMetrics, setAnalyticsMetrics] = useState({
     routingVolume: null,
     avgConfirmation: null,
     successRate: null,
   });
-  const {
-    menuRef,
-    isOpen: isWalletMenuOpen,
-    setIsOpen: setIsWalletMenuOpen,
-  } = useWalletMenu();
   const closeNav = () => {
     sessionStorage.setItem(NAV_STORAGE_KEY, "false");
     setIsNavOpen(false);
@@ -46,15 +37,6 @@ function AnalyticsPage({
     sessionStorage.setItem(NAV_STORAGE_KEY, "false");
     setIsNavOpen(false);
     action();
-  };
-
-  const handleConnect = async () => {
-    setIsConnecting(true);
-    try {
-      await onConnectWallet();
-    } finally {
-      setIsConnecting(false);
-    }
   };
 
   useEffect(() => {
@@ -334,66 +316,9 @@ function AnalyticsPage({
         <section className="topbar reveal wallet-app-bar">
           <div className="topbar-brand-group">
             <TushLogo size="sm" subtitle="Smart Wallet" onClick={onLandingClick || onDashboardClick} />
-            <nav className="desktop-nav-pills" aria-label="Desktop navigation">
-              <button type="button" className="desktop-nav-pill" onClick={onDashboardClick}>
-                Home
-              </button>
-              <button
-                type="button"
-                className="desktop-nav-pill"
-                onClick={() => {
-                  window.location.hash = 'nfts';
-                  onDashboardClick();
-                }}
-              >
-                NFTs
-              </button>
-              <button type="button" className="desktop-nav-pill is-active">
-                Apps
-              </button>
-              <button type="button" className="desktop-nav-pill" onClick={onHistoryClick}>
-                Activity
-              </button>
-              <button type="button" className="desktop-nav-pill" onClick={onHelpClick}>
-                Support
-              </button>
-              {onLandingClick && (
-                <button type="button" className="desktop-nav-pill desktop-nav-pill--accent" onClick={onLandingClick}>
-                  ✦ Landing
-                </button>
-              )}
-            </nav>
           </div>
           <div className="topbar-actions">
             <NetworkBadge />
-            <div className="wallet-menu" ref={menuRef}>
-              <button
-                type="button"
-                className="connect-pill"
-                onClick={() => {
-                  if (userPublicKey) {
-                    setIsWalletMenuOpen((prev) => !prev);
-                  } else {
-                    handleConnect();
-                  }
-                }}
-                disabled={isConnecting}
-                aria-expanded={isWalletMenuOpen}
-              >
-                {userPublicKey
-                  ? `Connected: ${formatShortAddress(userPublicKey)}`
-                  : isConnecting
-                    ? "Connecting..."
-                    : "Connect wallet"}
-              </button>
-              {userPublicKey && isWalletMenuOpen && (
-                <div className="wallet-dropdown">
-                  <button type="button" onClick={onDisconnectWallet}>
-                    Disconnect wallet
-                  </button>
-                </div>
-              )}
-            </div>
           </div>
         </section>
 

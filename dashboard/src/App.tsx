@@ -42,18 +42,13 @@ function OfflineBanner() {
 }
 
 function App() {
+  // The landing page is ALWAYS the first screen on every fresh load,
+  // regardless of saved wallet or URL hash.
   const [activeView, setActiveView] = useState(() => {
-    const hash = window.location.hash;
-    if (hash === '#welcome' || hash === '#landing') return 'landing';
-    if (hash === '#register') return 'register';
-    if (hash === '#help') return 'help';
-    if (hash === '#analytics') return 'analytics';
-    if (hash === '#history') return 'history';
-    if (hash === '#dashboard' || hash === '#nfts') return 'dashboard';
-    const hasSavedWallet =
-      Boolean(localStorage.getItem('tush_wallet_address')) ||
-      Boolean(localStorage.getItem('walletPublicKey'));
-    return hasSavedWallet ? 'dashboard' : 'landing';
+    if (window.location.hash !== '#welcome') {
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#welcome`);
+    }
+    return 'landing';
   });
 
   const [pendingModal, setPendingModal] = useState<string | null>(null);

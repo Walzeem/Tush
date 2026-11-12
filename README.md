@@ -1,6 +1,6 @@
 # Tush Wallet
 
-**Tush** is a self-custodial Stellar & Soroban wallet inspired by Slush Wallet, built with **React 19**, **TypeScript**, **Vite**, and a standalone **SEP-2 Federation & Tag Server** powered by **Node.js**, **Express 5**, and **SQLite**.
+**Tush** is a self-custodial Stellar & Soroban wallet, built with **React 19**, **TypeScript**, **Vite**, and a standalone **SEP-2 Federation & Tag Server** powered by **Node.js**, **Express 5**, and **SQLite**.
 
 Every wallet created or imported in Tush can claim a human-readable **`@tag`** (backed by the Stellar SEP-2 Federation protocol as `name*domain`). Instead of copying 56-character `G...` public keys, users can send and receive XLM, USDC, and Soroban assets using memorable `@tags` that resolve across the Stellar ecosystem.
 

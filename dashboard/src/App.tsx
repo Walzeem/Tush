@@ -42,9 +42,24 @@ function OfflineBanner() {
 }
 
 function App() {
-  // The landing page is ALWAYS the first screen on every fresh load,
-  // regardless of saved wallet or URL hash.
+  // On the web app, the landing page is ALWAYS the first screen on every fresh load.
+  // Inside the Chrome Extension popup/sidepanel, open directly to the wallet dashboard.
   const [activeView, setActiveView] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get('mode');
+    const isExtension =
+      window.location.protocol === 'chrome-extension:' ||
+      mode === 'popup' ||
+      mode === 'sidepanel';
+
+    if (isExtension) {
+      document.documentElement.classList.add('tush-extension-mode');
+      if (mode === 'popup') {
+        document.documentElement.classList.add('tush-extension-popup');
+      }
+      return 'dashboard';
+    }
+
     if (window.location.hash !== '#welcome') {
       window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#welcome`);
     }

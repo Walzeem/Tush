@@ -266,11 +266,17 @@ export default function LandingPage({
               <p>A powerful wallet, no downloads required. Works in any browser.</p>
               <button type="button" className="sl-btn sl-btn--white sl-btn--sm" onClick={launch}>Launch web app</button>
             </article>
-            <article className="sl-device">
-              <span className="sl-device__tag">Soon</span>
+            <article className="sl-device sl-device--hot">
+              <span className="sl-device__tag">Live</span>
               <h3>Browser extension</h3>
               <p>Seamless dApp access with instant approvals right in Chrome.</p>
-              <button type="button" className="sl-btn sl-btn--ghost sl-btn--sm" onClick={onOpenHelp}>Get notified</button>
+              <a
+                className="sl-btn sl-btn--white sl-btn--sm"
+                href="/tush-wallet-extension.zip"
+                download="tush-wallet-extension.zip"
+              >
+                Download for Chrome
+              </a>
             </article>
           </div>
         </div>

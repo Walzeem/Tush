@@ -45,6 +45,21 @@ declare global {
   }
 }
 
+export function syncExtensionStorage(): void {
+  try {
+    const g = globalThis as any;
+    if (typeof g.chrome !== 'undefined' && g.chrome?.storage?.local) {
+      g.chrome.storage.local.set({
+        tush_wallet_address: getAddress() || '',
+        tush_user_tag: getCachedTag() || '',
+        tush_connected_dapps: getConnectedDapps(),
+      });
+    }
+  } catch {
+    // Ignore storage sync errors outside extension environment
+  }
+}
+
 export function getConnectedDapps(): ConnectedDapp[] {
   try {
     const raw = localStorage.getItem(DAPPS_STORAGE_KEY);
@@ -59,12 +74,14 @@ export function recordDappConnection(origin: string, name = origin): ConnectedDa
   const list = getConnectedDapps().filter((d) => d.origin !== origin);
   const next: ConnectedDapp[] = [{ origin, name, connectedAt: now, lastUsedAt: now }, ...list];
   localStorage.setItem(DAPPS_STORAGE_KEY, JSON.stringify(next));
+  syncExtensionStorage();
   return next;
 }
 
 export function revokeDappConnection(origin: string): ConnectedDapp[] {
   const next = getConnectedDapps().filter((d) => d.origin !== origin);
   localStorage.setItem(DAPPS_STORAGE_KEY, JSON.stringify(next));
+  syncExtensionStorage();
   return next;
 }
 
@@ -73,9 +90,13 @@ export function revokeDappConnection(origin: string): ConnectedDapp[] {
  * discover and request signatures from Tush Wallet.
  */
 export function registerSep43Provider(ensureUnlocked: () => Promise<Keypair>): TushWalletProvider {
+  syncExtensionStorage();
+
   const touchOrigin = () => {
-    if (typeof window !== 'undefined' && window.location?.origin) {
+    if (typeof window !== 'undefined' && window.location?.origin && !window.location.protocol.startsWith('chrome-extension')) {
       recordDappConnection(window.location.origin, document.title || 'Tush dApp');
+    } else {
+      syncExtensionStorage();
     }
   };
 

@@ -53,3 +53,52 @@
 .vault-secondary { background: transparent; color: #9ca3af; font-weight: 600; }
 .vault-primary:disabled, .vault-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
 
+.vault-dapp-badge {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 240, 255, 0.14);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  color: #00f0ff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.vault-dapp-origin {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.vault-dapp-origin strong {
+  color: #f8fafc;
+  font-size: 0.9rem;
+}
+
+.vault-dapp-origin span {
+  color: #38bdf8;
+  font-size: 0.78rem;
+  word-break: break-all;
+}
+
+.vault-dapp-payload {
+  margin: 0;
+  padding: 10px 12px;
+  max-height: 120px;
+  overflow: auto;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.74rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+

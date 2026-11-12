@@ -776,6 +776,18 @@ function Dashboard({
           <div className="topbar-actions">
             <div className="header-actions-row">
               <NetworkBadge />
+              {typeof window !== 'undefined' &&
+                new URLSearchParams(window.location.search).get('mode') === 'popup' && (
+                  <button
+                    type="button"
+                    className="wallet-gear-btn"
+                    onClick={() => window.open('index.html#dashboard', '_blank')}
+                    title="Expand to full tab"
+                    aria-label="Expand to full tab"
+                  >
+                    ↗
+                  </button>
+                )}
               <div className="wallet-menu" ref={menuRef}>
                 {!activeWallet ? (
                   <button

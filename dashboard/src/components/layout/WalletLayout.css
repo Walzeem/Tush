@@ -14,3 +14,19 @@
   color: var(--text-primary, #f8fafc);
   overflow-x: hidden;
 }
+
+html.tush-extension-popup,
+html.tush-extension-popup body {
+  width: 390px;
+  min-height: 600px;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+html.tush-extension-popup .dashboard {
+  padding-top: 12px;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+

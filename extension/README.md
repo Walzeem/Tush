@@ -35,3 +35,4 @@ Self-custodial **Stellar & Soroban** browser extension wallet with universal **`
   - `await window.tushWallet.signTransaction(xdr, opts)`
   - `await window.tushWallet.signMessage(message, opts)`
   - `await window.tushWallet.signAuthEntry(entryXdr, opts)`
+

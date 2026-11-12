@@ -79,3 +79,4 @@
 
   window.dispatchEvent(new CustomEvent('tush-wallet:ready', { detail: provider }));
 })();
+

@@ -159,3 +159,4 @@ try {
 }
 
 console.log(`✓ Unpacked Chrome Extension ready at: ${EXT_DIST}`);
+

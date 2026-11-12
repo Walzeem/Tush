@@ -4,6 +4,7 @@
 // Resolution and reverse lookup go through the federation endpoints, so any
 // SEP-2 aware wallet can resolve `name*domain` too. Claiming a tag is proven by
 // signing `register:<name>:<address>` with the wallet key (SEP-53 message hash).
+import { Buffer } from 'buffer';
 import { StrKey, type Keypair } from '@stellar/stellar-sdk';
 
 export const API_BASE: string =

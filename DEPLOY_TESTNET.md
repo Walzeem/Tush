@@ -56,3 +56,4 @@ Once deployed, open your live Frontend HTTPS URL on desktop or mobile:
 3. **Claim `@tag`:** Claim your `@username` handle (signed via Ed25519 SEP-53 and stored in your live backend).
 4. **Fund on Testnet:** Click **Fund Wallet (10,000 XLM Testnet)** on the Dashboard to fund via Stellar Friendbot.
 5. **Send by `@tag` & Swap:** Send XLM to another `@tag` or test a live XLM ↔ USDC swap via Horizon Strict-Send paths.
+

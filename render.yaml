@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: tush-tags-backend
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: TRUST_PROXY
+        value: "1"
+
+  - type: web
+    name: tush-wallet-dashboard
+    runtime: static
+    rootDir: dashboard
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    headers:
+      - path: /.well-known/stellar.toml
+        name: Access-Control-Allow-Origin
+        value: "*"
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_NETWORK
+        value: testnet
+      - key: VITE_API_BASE
+        fromService:
+          type: web
+          name: tush-tags-backend
+          envVarKey: RENDER_EXTERNAL_URL

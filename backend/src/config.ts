@@ -38,12 +38,23 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
   const nodeEnv = env.NODE_ENV || 'development';
   const isProduction = nodeEnv === 'production';
 
-  const federationDomain = (env.FEDERATION_DOMAIN || 'localhost').trim().toLowerCase();
+  const detectedDomain =
+    env.FEDERATION_DOMAIN ||
+    env.RAILWAY_PUBLIC_DOMAIN ||
+    env.RENDER_EXTERNAL_HOSTNAME ||
+    (isProduction ? 'tush.stellar' : 'localhost');
+
+  const federationDomain = detectedDomain.trim().toLowerCase();
   if (isProduction && (federationDomain === 'localhost' || !federationDomain.includes('.'))) {
     throw new Error(
       'FEDERATION_DOMAIN must be set to the public domain serving this API (e.g. tags.example.com) in production.',
     );
   }
+
+  const detectedPublicUrl =
+    env.PUBLIC_URL ||
+    env.RENDER_EXTERNAL_URL ||
+    (env.RAILWAY_PUBLIC_DOMAIN ? `https://${env.RAILWAY_PUBLIC_DOMAIN}` : '');
 
   return {
     nodeEnv,
@@ -52,9 +63,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     host: env.HOST || '0.0.0.0',
     dbPath: env.DB_PATH || './data/tags.db',
     federationDomain,
-    publicUrl: env.PUBLIC_URL ? env.PUBLIC_URL.replace(/\/+$/, '') : '',
-    corsOrigins: toList(env.CORS_ORIGINS, 'http://localhost:3000,http://localhost:3001,http://localhost:5173'),
-    trustProxy: toInt(env.TRUST_PROXY, 0, 'TRUST_PROXY'),
+    publicUrl: detectedPublicUrl ? detectedPublicUrl.replace(/\/+$/, '') : '',
+    corsOrigins: toList(
+      env.CORS_ORIGINS,
+      '*,http://localhost:3000,http://localhost:3001,http://localhost:5173',
+    ),
+    trustProxy: toInt(env.TRUST_PROXY, isProduction ? 1 : 0, 'TRUST_PROXY'),
     maxTagsPerAddress: toInt(env.MAX_TAGS_PER_ADDRESS, 3, 'MAX_TAGS_PER_ADDRESS'),
     rateLimit: {
       windowMs: toInt(env.RATE_LIMIT_WINDOW_MS, 60_000, 'RATE_LIMIT_WINDOW_MS'),

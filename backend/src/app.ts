@@ -48,7 +48,16 @@ export function createApp({ config, db }: { config: AppConfig; db: TagDatabase }
 
   const appCors = cors({
     origin(origin, cb) {
-      cb(null, !origin || config.corsOrigins.includes(origin));
+      if (
+        !origin ||
+        config.corsOrigins.includes('*') ||
+        config.corsOrigins.includes(origin) ||
+        origin.startsWith('chrome-extension://')
+      ) {
+        cb(null, true);
+        return;
+      }
+      cb(null, false);
     },
     methods: ['GET', 'POST'],
     maxAge: 600,

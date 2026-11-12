@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import ScrollToTop from '../ScrollToTop';
+import TushLogo from '../components/TushLogo';
+import NetworkBadge from '../NetworkBadge';
 import MobileNav from './MobileNav';
 import { NAV_STORAGE_KEY, useNavState } from './shared';
 
 function HelpPage({
-  userPublicKey,
-  onDisconnectWallet,
   onDashboardClick,
   onAnalyticsClick,
   onHistoryClick,
+  onLandingClick,
   onRegisterClick,
   canRegister,
 }: any) {
@@ -73,8 +74,7 @@ function HelpPage({
       />
       <aside className={`sidebar ${isNavOpen ? "is-open" : ""}`}>
         <div className="brand">
-          <div className="brand-mark">T</div>
-          <h1>Tush Wallet</h1>
+          <TushLogo size="md" subtitle="Stellar Wallet" onClick={onLandingClick || onDashboardClick} />
         </div>
         <div className="nav">
           <button type="button" onClick={() => handleNav(onDashboardClick)}>
@@ -104,38 +104,48 @@ function HelpPage({
             </button>
           )}
         </div>
-        <div className="sidebar-card">
-          <h3>Support hours</h3>
-          <p>Live help is active Mon-Fri, 09:00-18:00 UTC.</p>
-        </div>
-        <div className="sidebar-card">
-          <h3>Contact</h3>
-          <p>Need a real person? Open a ticket from your wallet settings.</p>
-        </div>
-        {userPublicKey && (
-          <button
-            type="button"
-            className="disconnect-button"
-            onClick={onDisconnectWallet}
-          >
-            Disconnect wallet
-          </button>
-        )}
       </aside>
 
       <main className="main">
-        <section className="help-hero">
-          <button
-            type="button"
-            className="hamburger"
-            onClick={() => setIsNavOpen((prev) => !prev)}
-            aria-label="Toggle navigation"
-            aria-expanded={isNavOpen}
-          >
-            <span />
-            <span />
-            <span />
-          </button>
+        <section className="topbar reveal wallet-app-bar">
+          <div className="topbar-brand-group">
+            <TushLogo size="sm" subtitle="Smart Wallet" onClick={onLandingClick || onDashboardClick} />
+            <nav className="desktop-nav-pills" aria-label="Desktop navigation">
+              <button type="button" className="desktop-nav-pill" onClick={onDashboardClick}>
+                Home
+              </button>
+              <button
+                type="button"
+                className="desktop-nav-pill"
+                onClick={() => {
+                  window.location.hash = 'nfts';
+                  onDashboardClick();
+                }}
+              >
+                NFTs
+              </button>
+              <button type="button" className="desktop-nav-pill" onClick={onAnalyticsClick}>
+                Apps
+              </button>
+              <button type="button" className="desktop-nav-pill" onClick={onHistoryClick}>
+                Activity
+              </button>
+              <button type="button" className="desktop-nav-pill is-active">
+                Support
+              </button>
+              {onLandingClick && (
+                <button type="button" className="desktop-nav-pill desktop-nav-pill--accent" onClick={onLandingClick}>
+                  ✦ Landing
+                </button>
+              )}
+            </nav>
+          </div>
+          <div className="topbar-actions">
+            <NetworkBadge />
+          </div>
+        </section>
+
+        <section className="help-hero card reveal">
           <div className="help-hero-content">
             <p className="help-eyebrow">Help Center</p>
             <h2 className="help-title">System Clarity</h2>

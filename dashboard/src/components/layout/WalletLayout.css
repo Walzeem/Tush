@@ -2,29 +2,15 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   width: 100%;
   min-height: 100vh;
-  height: 100vh;
-  max-width: 420px;
-  max-height: 880px;
-  min-width: 360px;
-  flex-shrink: 0;
   margin: 0 auto;
   box-sizing: border-box;
-  padding-bottom: 0;
-  background: var(--bg-main);
-  border-left: 1px solid #1f1f1f;
-  border-right: 1px solid #1f1f1f;
-  overflow: hidden;
-}
-
-@media (min-width: 768px) {
-  .wallet-layout {
-    margin: 24px auto;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 28px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-    overflow: hidden;
-  }
+  background:
+    radial-gradient(circle at 15% 10%, rgba(0, 240, 255, 0.11) 0%, transparent 40%),
+    radial-gradient(circle at 85% 18%, rgba(124, 58, 237, 0.13) 0%, transparent 45%),
+    radial-gradient(circle at 50% 90%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
+    #050811;
+  color: var(--text-primary, #f8fafc);
+  overflow-x: hidden;
 }

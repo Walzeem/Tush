@@ -1,10 +1,11 @@
 interface MobileNavProps {
-  active: 'dashboard' | 'nfts' | 'analytics' | 'history' | 'help' | 'register' | string;
+  active: 'dashboard' | 'nfts' | 'analytics' | 'history' | 'help' | 'register' | 'landing' | string;
   onDashboardClick: () => void;
   onNftsClick?: () => void;
   onAnalyticsClick: () => void;
   onHistoryClick: () => void;
   onHelpClick?: () => void;
+  onLandingClick?: () => void;
   onRegisterClick?: () => void;
   canRegister?: boolean;
 }
@@ -15,6 +16,7 @@ function MobileNav({
   onNftsClick,
   onAnalyticsClick,
   onHistoryClick,
+  onHelpClick,
 }: MobileNavProps) {
   const handleNfts = () => {
     if (onNftsClick) {
@@ -25,7 +27,7 @@ function MobileNav({
   };
 
   return (
-    <nav className="mobile-nav" aria-label="Primary">
+    <nav className="mobile-nav" aria-label="Primary wallet navigation">
       <button
         type="button"
         className={active === 'dashboard' ? 'is-active' : ''}
@@ -79,6 +81,22 @@ function MobileNav({
         </svg>
         <span>Activity</span>
       </button>
+
+      {onHelpClick && (
+        <button
+          type="button"
+          className={active === 'help' ? 'is-active' : ''}
+          onClick={onHelpClick}
+          aria-current={active === 'help' ? 'page' : undefined}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M9.5 9.5a2.5 2.5 0 1 1 3.8 2.1c-.9.6-1.3 1.1-1.3 2.1" />
+            <circle cx="12" cy="17" r="0.8" fill="currentColor" />
+          </svg>
+          <span>Support</span>
+        </button>
+      )}
     </nav>
   );
 }

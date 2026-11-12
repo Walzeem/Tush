@@ -29,6 +29,7 @@ import SwapModal from '../components/modals/SwapModal';
 import CreateWalletModal from '../components/modals/CreateWalletModal';
 import ClaimTagModal from '../components/modals/ClaimTagModal';
 import WalletSettingsModal from '../components/modals/WalletSettingsModal';
+import TushLogo from '../components/TushLogo';
 import { useVault, CANCELLED } from '../components/vaultContext';
 import { getCachedTag, setCachedTag, syncTag } from '../utils/tags';
 import { parseSep7Uri, type Sep7PayRequest } from '../utils/sep7';
@@ -45,9 +46,12 @@ function Dashboard({
   onAnalyticsClick,
   onHistoryClick,
   onHelpClick,
+  onLandingClick,
   onRegistrationStateChange,
   canRegister,
-}) {
+  initialModal,
+  onClearInitialModal,
+}: any) {
   const [isNavOpen, setIsNavOpen] = useNavState();
   const {
     menuRef,
@@ -155,6 +159,13 @@ function Dashboard({
   ];
 
   // Automatically detect ?sep7=... payment request deep links on load, and sync #nfts hash
+  useEffect(() => {
+    if (initialModal) {
+      setActiveModal(initialModal);
+      onClearInitialModal?.();
+    }
+  }, [initialModal, onClearInitialModal]);
+
   useEffect(() => {
     const parsed = parseSep7Uri(window.location.href);
     if (parsed && parsed.type === 'pay') {
@@ -693,8 +704,7 @@ function Dashboard({
       />
       <aside className={`sidebar ${isNavOpen ? "is-open" : ""}`}>
         <div className="brand">
-          <div className="brand-mark">T</div>
-          <h1>Tush Wallet</h1>
+          <TushLogo size="md" subtitle="Stellar Wallet" onClick={onLandingClick} />
         </div>
         <div className="nav">
           <button
@@ -702,7 +712,7 @@ function Dashboard({
             aria-current={portfolioTab !== 'nfts' ? 'page' : undefined}
             onClick={() => {
               setPortfolioTab('tokens');
-              window.location.hash = '';
+              window.location.hash = 'dashboard';
               closeNav();
             }}
           >
@@ -728,6 +738,11 @@ function Dashboard({
           <button type="button" onClick={() => handleNav(onHelpClick)}>
             Support
           </button>
+          {onLandingClick && (
+            <button type="button" onClick={() => handleNav(onLandingClick)}>
+              Landing Page
+            </button>
+          )}
           {canRegister && (
             <button type="button" onClick={() => handleNav(onRegisterClick)}>
               Registration
@@ -755,17 +770,45 @@ function Dashboard({
 
       <main className="main">
         <section className="topbar reveal wallet-app-bar">
-          <button
-            type="button"
-            className="hamburger"
-            onClick={() => setIsNavOpen((prev) => !prev)}
-            aria-label="Toggle navigation"
-            aria-expanded={isNavOpen}
-          >
-            <span />
-            <span />
-            <span />
-          </button>
+          <div className="topbar-brand-group">
+            <TushLogo size="sm" subtitle="Smart Wallet" onClick={onLandingClick} />
+            <nav className="desktop-nav-pills" aria-label="Desktop navigation">
+              <button
+                type="button"
+                className={`desktop-nav-pill ${portfolioTab !== 'nfts' ? 'is-active' : ''}`}
+                onClick={() => {
+                  setPortfolioTab('tokens');
+                  window.location.hash = 'dashboard';
+                }}
+              >
+                Home
+              </button>
+              <button
+                type="button"
+                className={`desktop-nav-pill ${portfolioTab === 'nfts' ? 'is-active' : ''}`}
+                onClick={() => {
+                  setPortfolioTab('nfts');
+                  window.location.hash = 'nfts';
+                }}
+              >
+                NFTs
+              </button>
+              <button type="button" className="desktop-nav-pill" onClick={onAnalyticsClick}>
+                Apps
+              </button>
+              <button type="button" className="desktop-nav-pill" onClick={onHistoryClick}>
+                Activity
+              </button>
+              <button type="button" className="desktop-nav-pill" onClick={onHelpClick}>
+                Support
+              </button>
+              {onLandingClick && (
+                <button type="button" className="desktop-nav-pill desktop-nav-pill--accent" onClick={onLandingClick}>
+                  ✦ Landing
+                </button>
+              )}
+            </nav>
+          </div>
           <div className="topbar-actions">
             <div className="header-actions-row">
               <NetworkBadge />
@@ -787,21 +830,22 @@ function Dashboard({
                     <span>Create Wallet</span>
                   </button>
                 ) : (
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <div className="wallet-chip-group">
                     {userTag ? (
                       <button
                         type="button"
-                        className="chip"
+                        className="chip chip--tag"
                         onClick={() => setActiveModal('settings')}
                         title="Account & Security Settings"
                       >
-                        {userTag} ⚙
+                        <span>{userTag}</span>
+                        <span aria-hidden="true">⚙</span>
                       </button>
                     ) : (
                       <>
                         <button
                           type="button"
-                          className="chip"
+                          className="chip chip--claim"
                           onClick={() => setActiveModal('claim-tag')}
                           title="Claim your @tag"
                         >
@@ -809,9 +853,10 @@ function Dashboard({
                         </button>
                         <button
                           type="button"
-                          className="chip"
+                          className="chip chip--icon"
                           onClick={() => setActiveModal('settings')}
                           title="Account & Security Settings"
+                          aria-label="Account Settings"
                         >
                           ⚙
                         </button>
@@ -866,47 +911,51 @@ function Dashboard({
                 </button>
               </div>
               <div className="balance-actions-row">
-                <button type="button" onClick={() => handleBalanceAction('send')}>
-                  <span aria-hidden="true">↗</span>
+                <button
+                  type="button"
+                  className="wallet-action-btn wallet-action-btn--primary"
+                  onClick={() => handleBalanceAction('send')}
+                >
+                  <span className="wallet-action-btn__icon" aria-hidden="true">↗</span>
                   <span>Send</span>
                 </button>
-                <button type="button" onClick={() => handleBalanceAction('receive')}>
-                  <span aria-hidden="true">↙</span>
+                <button
+                  type="button"
+                  className="wallet-action-btn"
+                  onClick={() => handleBalanceAction('receive')}
+                >
+                  <span className="wallet-action-btn__icon" aria-hidden="true">↙</span>
                   <span>Receive</span>
                 </button>
-                <button type="button" onClick={() => handleBalanceAction('swap')}>
-                  <span aria-hidden="true">⇄</span>
+                <button
+                  type="button"
+                  className="wallet-action-btn"
+                  onClick={() => handleBalanceAction('swap')}
+                >
+                  <span className="wallet-action-btn__icon" aria-hidden="true">⇄</span>
                   <span>Swap</span>
                 </button>
               </div>
-              {activeWallet && (
-                <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center' }}>
-                  <button 
-                    type="button" 
-                    style={{ 
-                      background: 'rgba(255, 255, 255, 0.05)', 
-                      border: '1px solid rgba(0, 240, 255, 0.4)', 
-                      color: '#ffffff',
-                      width: 'auto', 
-                      padding: '8px 16px', 
-                      fontSize: '0.9rem',
-                      borderRadius: '100px',
-                      cursor: isFunding ? 'not-allowed' : 'pointer',
-                      transition: 'background 0.2s ease',
-                    }}
-                    onMouseOver={(e) => {
-                      if (!isFunding) e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                    }}
-                    onMouseOut={(e) => {
-                      if (!isFunding) e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                    }}
+              <div className="balance-secondary-actions">
+                {activeWallet ? (
+                  <button
+                    type="button"
+                    className="fund-wallet-btn"
                     onClick={fundWallet}
                     disabled={isFunding}
                   >
-                    {isFunding ? 'Funding...' : 'Fund Wallet (Testnet)'}
+                    <span>💧 {isFunding ? 'Funding Testnet Account...' : 'Fund Wallet (10,000 XLM Testnet)'}</span>
                   </button>
-                </div>
-              )}
+                ) : (
+                  <button
+                    type="button"
+                    className="fund-wallet-btn fund-wallet-btn--cta"
+                    onClick={handleCreateWallet}
+                  >
+                    <span>✨ Create or Import Your Stellar Smart Wallet</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="assets-section">

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { API_BASE, apiErrorMessage, walletKit } from './shared'; // <-- 1. Import walletKit instead of Freighter
+import TushLogo from '../components/TushLogo';
+import { API_BASE, apiErrorMessage, walletKit } from './shared';
 
 const USERNAME_REGEX = /^[a-zA-Z0-9]/;
 
@@ -141,7 +142,7 @@ function RegistrationPage({
       
       if (result && result.error) throw new Error(result.error);
       
-      let rawSignature = typeof result === 'string' ? result : (result.signedMessage || result.signature);
+      const rawSignature = typeof result === 'string' ? result : (result.signedMessage || result.signature);
       
       // walletKit might return a Uint8Array or Buffer object. Convert to base64 string.
       if (typeof rawSignature === 'object' && rawSignature !== null) {
@@ -242,12 +243,9 @@ function RegistrationPage({
     <div className="registration">
       <section className="hero-panel">
         <div className="brand">
-          <div className="brand-mark">S</div>
-          <div>
-            <p className="brand-eyebrow">Stellar Pay</p>
-            <h1>Claim your on-chain identity.</h1>
-          </div>
+          <TushLogo size="lg" subtitle="Universal SEP-2 Identity" onClick={onBack} />
         </div>
+        <h1>Claim your on-chain identity.</h1>
         <p className="hero-copy">
           Register a username that follows your wallet across apps, tips, and
           payments. Secure, memorable, and ready for the Stellar network.

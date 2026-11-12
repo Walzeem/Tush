@@ -1,7 +1,8 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as StellarSdk from '@stellar/stellar-sdk';
 import NetworkBadge from '../NetworkBadge';
 import ScrollToTop from '../ScrollToTop';
+import TushLogo from '../components/TushLogo';
 import MobileNav from './MobileNav';
 import { NAV_STORAGE_KEY, useNavState, formatShortAddress } from './shared';
 import './HistoryPage.css';
@@ -10,6 +11,7 @@ function HistoryPage({
   onDashboardClick,
   onAnalyticsClick,
   onHelpClick,
+  onLandingClick,
   onRegisterClick,
   canRegister,
 }: any) {
@@ -81,8 +83,7 @@ function HistoryPage({
       />
       <aside className={`sidebar ${isNavOpen ? "is-open" : ""}`}>
         <div className="brand">
-          <div className="brand-mark">T</div>
-          <h1>Tush Wallet</h1>
+          <TushLogo size="md" subtitle="Stellar Wallet" onClick={onLandingClick || onDashboardClick} />
         </div>
         <div className="nav">
           <button type="button" onClick={() => handleNav(onDashboardClick)}>
@@ -115,30 +116,49 @@ function HistoryPage({
       </aside>
 
       <main className="main">
-        <section className="topbar reveal" style={{ padding: '24px 0 0 0', display: 'block' }}>
-          <button
-            type="button"
-            className="hamburger"
-            onClick={() => setIsNavOpen((prev) => !prev)}
-            aria-label="Toggle navigation"
-            aria-expanded={isNavOpen}
-            style={{ position: 'absolute', top: '24px', right: '16px' }}
-          >
-            <span />
-            <span />
-            <span />
-          </button>
-          
-          <div className="history-header">
-            <div className="history-title-group">
-              <h2>Transaction History</h2>
-              <p>Review your recent on-chain activity</p>
-            </div>
-            <div className="history-pills">
-              <span className="pill-testnet">Testnet</span>
-              {userTag && <span className="pill-tag">{userTag}</span>}
-            </div>
+        <section className="topbar reveal wallet-app-bar">
+          <div className="topbar-brand-group">
+            <TushLogo size="sm" subtitle="Smart Wallet" onClick={onLandingClick || onDashboardClick} />
+            <nav className="desktop-nav-pills" aria-label="Desktop navigation">
+              <button type="button" className="desktop-nav-pill" onClick={onDashboardClick}>
+                Home
+              </button>
+              <button
+                type="button"
+                className="desktop-nav-pill"
+                onClick={() => {
+                  window.location.hash = 'nfts';
+                  onDashboardClick();
+                }}
+              >
+                NFTs
+              </button>
+              <button type="button" className="desktop-nav-pill" onClick={onAnalyticsClick}>
+                Apps
+              </button>
+              <button type="button" className="desktop-nav-pill is-active">
+                Activity
+              </button>
+              <button type="button" className="desktop-nav-pill" onClick={onHelpClick}>
+                Support
+              </button>
+              {onLandingClick && (
+                <button type="button" className="desktop-nav-pill desktop-nav-pill--accent" onClick={onLandingClick}>
+                  ✦ Landing
+                </button>
+              )}
+            </nav>
           </div>
+          <div className="topbar-actions">
+            <NetworkBadge />
+            {userTag && <span className="pill-tag">{userTag}</span>}
+          </div>
+        </section>
+
+        <section className="page-hero-banner reveal">
+          <span className="balance-eyebrow">ON-CHAIN LEDGER</span>
+          <h2 className="headline">Transaction Activity</h2>
+          <p className="subtle">Review your recent Stellar &amp; Soroban payments and click any row to inspect on Stellar Expert.</p>
         </section>
 
         <section className="reveal" style={{ marginTop: '24px', paddingBottom: '100px' }}>

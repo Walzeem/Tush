@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import NetworkBadge from '../NetworkBadge';
 import ScrollToTop from '../ScrollToTop';
+import TushLogo from '../components/TushLogo';
 import MobileNav from './MobileNav';
 import {
   ANALYTICS_MAX_PAGES,
@@ -21,9 +22,10 @@ function AnalyticsPage({
   onDashboardClick,
   onHistoryClick,
   onHelpClick,
+  onLandingClick,
   onRegisterClick,
   canRegister,
-}) {
+}: any) {
   const [isNavOpen, setIsNavOpen] = useNavState();
   const [isConnecting, setIsConnecting] = useState(false);
   const [analyticsMetrics, setAnalyticsMetrics] = useState({
@@ -279,8 +281,7 @@ function AnalyticsPage({
       />
       <aside className={`sidebar ${isNavOpen ? "is-open" : ""}`}>
         <div className="brand">
-          <div className="brand-mark">T</div>
-          <h1>Tush Wallet</h1>
+          <TushLogo size="md" subtitle="Stellar Wallet" onClick={onLandingClick || onDashboardClick} />
         </div>
         <div className="nav">
           <button type="button" onClick={() => handleNav(onDashboardClick)}>
@@ -329,24 +330,39 @@ function AnalyticsPage({
         )}
       </aside>
 
-      <main className="main">
-        <section className="topbar reveal">
-          <button
-            type="button"
-            className="hamburger"
-            onClick={() => setIsNavOpen((prev) => !prev)}
-            aria-label="Toggle navigation"
-            aria-expanded={isNavOpen}
-          >
-            <span />
-            <span />
-            <span />
-          </button>
-          <div>
-            <h2 className="headline">Stellar & Soroban Apps</h2>
-            <p className="subtle">
-              Explore DeFi, DEXes, lending protocols, and real-time Stellar network telemetry.
-            </p>
+      <main className="main main--wide">
+        <section className="topbar reveal wallet-app-bar">
+          <div className="topbar-brand-group">
+            <TushLogo size="sm" subtitle="Smart Wallet" onClick={onLandingClick || onDashboardClick} />
+            <nav className="desktop-nav-pills" aria-label="Desktop navigation">
+              <button type="button" className="desktop-nav-pill" onClick={onDashboardClick}>
+                Home
+              </button>
+              <button
+                type="button"
+                className="desktop-nav-pill"
+                onClick={() => {
+                  window.location.hash = 'nfts';
+                  onDashboardClick();
+                }}
+              >
+                NFTs
+              </button>
+              <button type="button" className="desktop-nav-pill is-active">
+                Apps
+              </button>
+              <button type="button" className="desktop-nav-pill" onClick={onHistoryClick}>
+                Activity
+              </button>
+              <button type="button" className="desktop-nav-pill" onClick={onHelpClick}>
+                Support
+              </button>
+              {onLandingClick && (
+                <button type="button" className="desktop-nav-pill desktop-nav-pill--accent" onClick={onLandingClick}>
+                  ✦ Landing
+                </button>
+              )}
+            </nav>
           </div>
           <div className="topbar-actions">
             <NetworkBadge />
@@ -379,6 +395,14 @@ function AnalyticsPage({
               )}
             </div>
           </div>
+        </section>
+
+        <section className="page-hero-banner reveal">
+          <span className="balance-eyebrow">STELLAR &amp; SOROBAN ECOSYSTEM</span>
+          <h2 className="headline">Explore dApps &amp; Live Network Telemetry</h2>
+          <p className="subtle">
+            Connect directly to Soroban AMMs, lending pools, and orderbook DEXes with SEP-43 wallet support.
+          </p>
         </section>
 
         <section className="grid columns-3" style={{ marginBottom: '24px' }}>

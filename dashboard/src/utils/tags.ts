@@ -6,8 +6,11 @@
 // signing `register:<name>:<address>` with the wallet key (SEP-53 message hash).
 import { StrKey, type Keypair } from '@stellar/stellar-sdk';
 
-export const API_BASE: string = import.meta.env?.VITE_API_BASE || 'http://localhost:4000';
-export const DEFAULT_FEDERATION_DOMAIN: string = import.meta.env?.VITE_FEDERATION_DOMAIN || 'localhost';
+export const API_BASE: string =
+  import.meta.env?.VITE_API_BASE ||
+  (import.meta.env?.PROD ? 'https://tush-backend-h586.onrender.com' : 'http://localhost:4000');
+export const DEFAULT_FEDERATION_DOMAIN: string =
+  import.meta.env?.VITE_FEDERATION_DOMAIN || 'tush-alpha.vercel.app';
 
 const TAG_CACHE_KEY = 'tush_user_tag';
 const SEP53_PREFIX = 'Stellar Signed Message:\n';

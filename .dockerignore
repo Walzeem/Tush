@@ -6,3 +6,4 @@ backend/data
 **/*.db-wal
 **/.env
 .git
+

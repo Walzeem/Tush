@@ -68,8 +68,8 @@
   };
 
   Object.defineProperty(window, 'tushWallet', {
-    value: Object.freeze(provider),
-    writable: false,
+    value: provider,
+    writable: true,
     configurable: true,
   });
 

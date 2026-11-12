@@ -167,7 +167,19 @@ export function registerSep43Provider(ensureUnlocked: () => Promise<Keypair>): T
   };
 
   if (typeof window !== 'undefined') {
-    window.tushWallet = provider;
+    try {
+      Object.defineProperty(window, 'tushWallet', {
+        value: provider,
+        writable: true,
+        configurable: true,
+      });
+    } catch {
+      try {
+        window.tushWallet = provider;
+      } catch {
+        // Ignore if another extension locked window.tushWallet
+      }
+    }
     window.dispatchEvent(new CustomEvent('tush-wallet:ready', { detail: provider }));
   }
 

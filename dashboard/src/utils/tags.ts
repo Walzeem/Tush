@@ -10,7 +10,7 @@ export const API_BASE: string =
   import.meta.env?.VITE_API_BASE ||
   (import.meta.env?.PROD ? 'https://tush-backend-h586.onrender.com' : 'http://localhost:4000');
 export const DEFAULT_FEDERATION_DOMAIN: string =
-  import.meta.env?.VITE_FEDERATION_DOMAIN || 'tush-alpha.vercel.app';
+  import.meta.env?.VITE_FEDERATION_DOMAIN || 'tush.vercel.app';
 
 const TAG_CACHE_KEY = 'tush_user_tag';
 const SEP53_PREFIX = 'Stellar Signed Message:\n';

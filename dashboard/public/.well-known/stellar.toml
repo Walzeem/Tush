@@ -3,5 +3,5 @@ NETWORK_PASSPHRASE="Test SDF Network ; September 2015"
 
 [DOCUMENTATION]
 ORG_NAME="Tush Wallet"
-ORG_URL="https://tush-alpha.vercel.app"
+ORG_URL="https://tush.vercel.app"
 ORG_DESCRIPTION="Universal @tag Self-Custodial Stellar & Soroban Smart Wallet"

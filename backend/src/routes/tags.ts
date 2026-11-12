@@ -79,7 +79,15 @@ export function tagRoutes({
     let row: TagRecord | null = null;
     if (type === 'name') {
       const [name, domain, ...extra] = q.toLowerCase().split('*');
-      if (extra.length || (domain !== undefined && domain !== config.federationDomain)) {
+      const allowedDomains = new Set([
+        config.federationDomain,
+        'tush.stellar',
+        'tush-wallet.vercel.app',
+        'tush.vercel.app',
+        'tush-alpha.vercel.app',
+        'localhost',
+      ]);
+      if (extra.length || (domain !== undefined && !allowedDomains.has(domain))) {
         throw sep2NotFound('Name tag not found');
       }
       row = db.findByName(normalizeUsername(name));

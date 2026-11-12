@@ -10,7 +10,16 @@ export const API_BASE: string =
   import.meta.env?.VITE_API_BASE ||
   (import.meta.env?.PROD ? 'https://tush-backend-h586.onrender.com' : 'http://localhost:4000');
 export const DEFAULT_FEDERATION_DOMAIN: string =
-  import.meta.env?.VITE_FEDERATION_DOMAIN || 'tush-wallet.vercel.app';
+  import.meta.env?.VITE_FEDERATION_DOMAIN || 'tush.stellar';
+
+const ACCEPTED_DOMAINS = new Set([
+  DEFAULT_FEDERATION_DOMAIN,
+  'tush.stellar',
+  'tush-wallet.vercel.app',
+  'tush.vercel.app',
+  'tush-alpha.vercel.app',
+  'localhost',
+]);
 
 const TAG_CACHE_KEY = 'tush_user_tag';
 const SEP53_PREFIX = 'Stellar Signed Message:\n';
@@ -70,8 +79,10 @@ async function apiError(response: Response, fallback: string): Promise<string> {
 
 /** Address a tag points to, or null if the tag is not registered. Throws on network/server errors. */
 export async function resolveTag(input: string, { signal }: RequestOptions = {}): Promise<string | null> {
+  const query = tagName(input);
+  if (!query) return null;
   const response = await fetch(
-    `${API_BASE}/federation?q=${encodeURIComponent(toFederationAddress(input))}&type=name`,
+    `${API_BASE}/federation?q=${encodeURIComponent(query)}&type=name`,
     { signal },
   );
   if (response.status === 404) return null;
@@ -153,7 +164,7 @@ export async function resolveRecipient(input: string, opts?: RequestOptions): Pr
   }
 
   const domain = value.includes('*') ? value.split('*')[1].toLowerCase() : DEFAULT_FEDERATION_DOMAIN;
-  if (domain !== DEFAULT_FEDERATION_DOMAIN) {
+  if (!ACCEPTED_DOMAINS.has(domain)) {
     return { error: `Only tags on ${DEFAULT_FEDERATION_DOMAIN} are supported here.` };
   }
   const invalid = validateTagName(value);

@@ -152,3 +152,4 @@ export function registerSep43Provider(ensureUnlocked: () => Promise<Keypair>): T
 
   return provider;
 }
+

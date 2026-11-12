@@ -5,7 +5,6 @@ import { NAV_STORAGE_KEY, useNavState } from './shared';
 
 function HelpPage({
   userPublicKey,
-  onConnectWallet: _onConnectWallet,
   onDisconnectWallet,
   onDashboardClick,
   onAnalyticsClick,
@@ -74,21 +73,30 @@ function HelpPage({
       />
       <aside className={`sidebar ${isNavOpen ? "is-open" : ""}`}>
         <div className="brand">
-          <div className="brand-mark">S</div>
-          <h1>Stellar Pay</h1>
+          <div className="brand-mark">T</div>
+          <h1>Tush Wallet</h1>
         </div>
         <div className="nav">
           <button type="button" onClick={() => handleNav(onDashboardClick)}>
-            Dashboard
+            Home
           </button>
-          <button type="button" onClick={() => handleNav(onHistoryClick)}>
-            History
+          <button
+            type="button"
+            onClick={() => {
+              window.location.hash = 'nfts';
+              handleNav(onDashboardClick);
+            }}
+          >
+            NFTs
           </button>
           <button type="button" onClick={() => handleNav(onAnalyticsClick)}>
-            Analytics
+            Apps
+          </button>
+          <button type="button" onClick={() => handleNav(onHistoryClick)}>
+            Activity
           </button>
           <button type="button" aria-current="page" onClick={closeNav}>
-            Help
+            Support
           </button>
           {canRegister && (
             <button type="button" onClick={() => handleNav(onRegisterClick)}>
@@ -182,6 +190,10 @@ function HelpPage({
       <MobileNav
         active="help"
         onDashboardClick={() => handleNav(onDashboardClick)}
+        onNftsClick={() => {
+          window.location.hash = 'nfts';
+          handleNav(onDashboardClick);
+        }}
         onHistoryClick={() => handleNav(onHistoryClick)}
         onAnalyticsClick={() => handleNav(onAnalyticsClick)}
         onHelpClick={closeNav}

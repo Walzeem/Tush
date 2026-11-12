@@ -82,20 +82,29 @@ function HistoryPage({
       <aside className={`sidebar ${isNavOpen ? "is-open" : ""}`}>
         <div className="brand">
           <div className="brand-mark">T</div>
-          <h1>Tush</h1>
+          <h1>Tush Wallet</h1>
         </div>
         <div className="nav">
           <button type="button" onClick={() => handleNav(onDashboardClick)}>
-            Dashboard
+            Home
           </button>
-          <button type="button" aria-current="page" onClick={closeNav}>
-            History
+          <button
+            type="button"
+            onClick={() => {
+              window.location.hash = 'nfts';
+              handleNav(onDashboardClick);
+            }}
+          >
+            NFTs
           </button>
           <button type="button" onClick={() => handleNav(onAnalyticsClick)}>
-            Analytics
+            Apps
+          </button>
+          <button type="button" aria-current="page" onClick={closeNav}>
+            Activity
           </button>
           <button type="button" onClick={() => handleNav(onHelpClick)}>
-            Help
+            Support
           </button>
           {canRegister && (
             <button type="button" onClick={() => handleNav(onRegisterClick)}>
@@ -191,6 +200,10 @@ function HistoryPage({
       <MobileNav
         active="history"
         onDashboardClick={() => handleNav(onDashboardClick)}
+        onNftsClick={() => {
+          window.location.hash = 'nfts';
+          handleNav(onDashboardClick);
+        }}
         onHistoryClick={closeNav}
         onAnalyticsClick={() => handleNav(onAnalyticsClick)}
         onHelpClick={() => handleNav(onHelpClick)}

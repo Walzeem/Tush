@@ -1,73 +1,84 @@
+interface MobileNavProps {
+  active: 'dashboard' | 'nfts' | 'analytics' | 'history' | 'help' | 'register' | string;
+  onDashboardClick: () => void;
+  onNftsClick?: () => void;
+  onAnalyticsClick: () => void;
+  onHistoryClick: () => void;
+  onHelpClick?: () => void;
+  onRegisterClick?: () => void;
+  canRegister?: boolean;
+}
+
 function MobileNav({
   active,
   onDashboardClick,
-  onHistoryClick,
+  onNftsClick,
   onAnalyticsClick,
-  onHelpClick,
-  onRegisterClick,
-  canRegister,
-}) {
+  onHistoryClick,
+}: MobileNavProps) {
+  const handleNfts = () => {
+    if (onNftsClick) {
+      onNftsClick();
+    } else {
+      window.location.hash = 'nfts';
+    }
+  };
+
   return (
     <nav className="mobile-nav" aria-label="Primary">
       <button
         type="button"
-        className={active === "dashboard" ? "is-active" : ""}
+        className={active === 'dashboard' ? 'is-active' : ''}
         onClick={onDashboardClick}
-        aria-current={active === "dashboard" ? "page" : undefined}
+        aria-current={active === 'dashboard' ? 'page' : undefined}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5Z" />
+          <path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h13A2.5 2.5 0 0 1 21 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 16.5v-9Z" />
+          <path d="M16 12h2" />
         </svg>
-        <span>Dashboard</span>
+        <span>Home</span>
       </button>
+
       <button
         type="button"
-        className={active === "history" ? "is-active" : ""}
-        onClick={onHistoryClick}
-        aria-current={active === "history" ? "page" : undefined}
+        className={active === 'nfts' ? 'is-active' : ''}
+        onClick={handleNfts}
+        aria-current={active === 'nfts' ? 'page' : undefined}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 5h16M6 12h12M9 19h6" />
+          <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+          <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+          <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+          <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
         </svg>
-        <span>History</span>
+        <span>NFTs</span>
       </button>
+
       <button
         type="button"
-        className={active === "analytics" ? "is-active" : ""}
+        className={active === 'analytics' ? 'is-active' : ''}
         onClick={onAnalyticsClick}
-        aria-current={active === "analytics" ? "page" : undefined}
+        aria-current={active === 'analytics' ? 'page' : undefined}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 19V5m5 14V9m5 10v-6m5 6V7" />
+          <circle cx="12" cy="12" r="9" />
+          <polygon points="14.5,9.5 9.5,11 8,16 13,14.5" />
         </svg>
-        <span>Analytics</span>
+        <span>Apps</span>
       </button>
+
       <button
         type="button"
-        className={active === "help" ? "is-active" : ""}
-        onClick={onHelpClick}
-        aria-current={active === "help" ? "page" : undefined}
+        className={active === 'history' ? 'is-active' : ''}
+        onClick={onHistoryClick}
+        aria-current={active === 'history' ? 'page' : undefined}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 18h.01M9.5 9.5a2.5 2.5 0 1 1 4.2 1.9c-.78.7-1.2 1.2-1.2 2.1" />
-          <path d="M12 3a9 9 0 1 0 9 9" />
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3.5 2" />
         </svg>
-        <span>Help</span>
+        <span>Activity</span>
       </button>
-      {canRegister && (
-        <button
-          type="button"
-          className={active === "register" ? "is-active" : ""}
-          onClick={onRegisterClick}
-          aria-current={active === "register" ? "page" : undefined}
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" />
-            <path d="M5 21a7 7 0 0 1 14 0" />
-          </svg>
-          <span>Register</span>
-        </button>
-      )}
     </nav>
   );
 }

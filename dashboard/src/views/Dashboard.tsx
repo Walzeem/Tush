@@ -154,7 +154,7 @@ function Dashboard({
     })),
   ];
 
-  // Automatically detect ?sep7=... payment request deep links on load
+  // Automatically detect ?sep7=... payment request deep links on load, and sync #nfts hash
   useEffect(() => {
     const parsed = parseSep7Uri(window.location.href);
     if (parsed && parsed.type === 'pay') {
@@ -163,6 +163,14 @@ function Dashboard({
       const cleanUrl = window.location.pathname + window.location.hash;
       window.history.replaceState({}, '', cleanUrl);
     }
+    const syncHashTab = () => {
+      if (window.location.hash === '#nfts') {
+        setPortfolioTab('nfts');
+      }
+    };
+    syncHashTab();
+    window.addEventListener('hashchange', syncHashTab);
+    return () => window.removeEventListener('hashchange', syncHashTab);
   }, []);
 
   const displayMessage = (text, color, bgColor) => {
@@ -685,21 +693,40 @@ function Dashboard({
       />
       <aside className={`sidebar ${isNavOpen ? "is-open" : ""}`}>
         <div className="brand">
-          <div className="brand-mark">S</div>
-          <h1>Stellar Pay</h1>
+          <div className="brand-mark">T</div>
+          <h1>Tush Wallet</h1>
         </div>
         <div className="nav">
-          <button type="button" aria-current="page" onClick={closeNav}>
-            Dashboard
+          <button
+            type="button"
+            aria-current={portfolioTab !== 'nfts' ? 'page' : undefined}
+            onClick={() => {
+              setPortfolioTab('tokens');
+              window.location.hash = '';
+              closeNav();
+            }}
+          >
+            Home
           </button>
-          <button type="button" onClick={() => handleNav(onHistoryClick)}>
-            History
+          <button
+            type="button"
+            aria-current={portfolioTab === 'nfts' ? 'page' : undefined}
+            onClick={() => {
+              setPortfolioTab('nfts');
+              window.location.hash = 'nfts';
+              closeNav();
+            }}
+          >
+            NFTs
           </button>
           <button type="button" onClick={() => handleNav(onAnalyticsClick)}>
-            Analytics
+            Apps
+          </button>
+          <button type="button" onClick={() => handleNav(onHistoryClick)}>
+            Activity
           </button>
           <button type="button" onClick={() => handleNav(onHelpClick)}>
-            Help
+            Support
           </button>
           {canRegister && (
             <button type="button" onClick={() => handleNav(onRegisterClick)}>
@@ -1081,8 +1108,17 @@ function Dashboard({
         </section>
       </main>
       <MobileNav
-        active="dashboard"
-        onDashboardClick={closeNav}
+        active={portfolioTab === 'nfts' ? 'nfts' : 'dashboard'}
+        onDashboardClick={() => {
+          setPortfolioTab('tokens');
+          window.location.hash = '';
+          closeNav();
+        }}
+        onNftsClick={() => {
+          setPortfolioTab('nfts');
+          window.location.hash = 'nfts';
+          closeNav();
+        }}
         onHistoryClick={() => handleNav(onHistoryClick)}
         onAnalyticsClick={() => handleNav(onAnalyticsClick)}
         onHelpClick={() => handleNav(onHelpClick)}

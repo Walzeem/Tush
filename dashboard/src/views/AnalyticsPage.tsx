@@ -279,21 +279,30 @@ function AnalyticsPage({
       />
       <aside className={`sidebar ${isNavOpen ? "is-open" : ""}`}>
         <div className="brand">
-          <div className="brand-mark">S</div>
-          <h1>Stellar Pay</h1>
+          <div className="brand-mark">T</div>
+          <h1>Tush Wallet</h1>
         </div>
         <div className="nav">
           <button type="button" onClick={() => handleNav(onDashboardClick)}>
-            Dashboard
+            Home
           </button>
-          <button type="button" onClick={() => handleNav(onHistoryClick)}>
-            History
+          <button
+            type="button"
+            onClick={() => {
+              window.location.hash = 'nfts';
+              handleNav(onDashboardClick);
+            }}
+          >
+            NFTs
           </button>
           <button type="button" aria-current="page" onClick={closeNav}>
-            Analytics
+            Apps
+          </button>
+          <button type="button" onClick={() => handleNav(onHistoryClick)}>
+            Activity
           </button>
           <button type="button" onClick={() => handleNav(onHelpClick)}>
-            Help
+            Support
           </button>
           {canRegister && (
             <button type="button" onClick={() => handleNav(onRegisterClick)}>
@@ -334,10 +343,9 @@ function AnalyticsPage({
             <span />
           </button>
           <div>
-            <h2 className="headline">Insights & Integrity</h2>
+            <h2 className="headline">Stellar & Soroban Apps</h2>
             <p className="subtle">
-              Verified proof of every route, settlement speed, and platform
-              success.
+              Explore DeFi, DEXes, lending protocols, and real-time Stellar network telemetry.
             </p>
           </div>
           <div className="topbar-actions">
@@ -373,6 +381,66 @@ function AnalyticsPage({
           </div>
         </section>
 
+        <section className="grid columns-3" style={{ marginBottom: '24px' }}>
+          {[
+            {
+              name: 'Soroswap',
+              category: 'Soroban AMM DEX',
+              desc: 'Swap tokens and provide liquidity on the first Soroban smart contract AMM.',
+              url: 'https://app.soroswap.finance',
+            },
+            {
+              name: 'Blend Protocol',
+              category: 'Lending & Yield',
+              desc: 'Modular liquidity and lending pools built on Stellar Soroban smart contracts.',
+              url: 'https://mainnet.blend.capital',
+            },
+            {
+              name: 'Aquarius (AQUA)',
+              category: 'Liquidity & Voting',
+              desc: 'Community-governed liquidity management and reward layer for Stellar DEX.',
+              url: 'https://aqua.network',
+            },
+            {
+              name: 'StellarX',
+              category: 'Orderbook DEX',
+              desc: 'Zero-fee trading across Stellar SDEX orderbooks and AMM liquidity pools.',
+              url: 'https://www.stellarx.com',
+            },
+            {
+              name: 'Phoenix DeFi',
+              category: 'Soroban DeFi Hub',
+              desc: 'Decentralized exchange and yield hub powered by Soroban smart contracts.',
+              url: 'https://www.phoenix-hub.io',
+            },
+            {
+              name: 'Stellar Expert',
+              category: 'Ledger Explorer',
+              desc: 'Inspect accounts, @tag transactions, Soroban contracts, and asset analytics.',
+              url: 'https://stellar.expert/explorer/testnet',
+            },
+          ].map((dapp) => (
+            <div key={dapp.name} className="card reveal" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '12px' }}>
+              <div>
+                <div className="card-header">
+                  <h2>{dapp.name}</h2>
+                  <span className="badge">{dapp.category}</span>
+                </div>
+                <p className="subtle" style={{ marginTop: '8px', fontSize: '0.88rem' }}>{dapp.desc}</p>
+              </div>
+              <a
+                href={dapp.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="connect-pill"
+                style={{ textAlign: 'center', textDecoration: 'none', display: 'inline-block', width: 'fit-content' }}
+              >
+                Open dApp ↗
+              </a>
+            </div>
+          ))}
+        </section>
+
         <section className="grid columns-3">
           <div className="card reveal">
             <div className="card-header">
@@ -406,6 +474,10 @@ function AnalyticsPage({
       <MobileNav
         active="analytics"
         onDashboardClick={() => handleNav(onDashboardClick)}
+        onNftsClick={() => {
+          window.location.hash = 'nfts';
+          handleNav(onDashboardClick);
+        }}
         onHistoryClick={() => handleNav(onHistoryClick)}
         onAnalyticsClick={closeNav}
         onHelpClick={() => handleNav(onHelpClick)}

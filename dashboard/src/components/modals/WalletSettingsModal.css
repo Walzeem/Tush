@@ -1,0 +1,143 @@
+.wallet-settings-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 20px;
+  color: #fff;
+}
+
+.ws-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+  text-align: center;
+}
+
+.ws-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+
+.ws-section-header {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9ca3af;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.ws-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.ws-label {
+  font-size: 0.78rem;
+  color: #9ca3af;
+}
+
+.ws-value {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.ws-neon {
+  color: var(--accent-neon, #00f0ff);
+}
+
+.ws-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  color: #d1d5db;
+}
+
+.ws-muted {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.ws-pill-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #fff;
+  border-radius: 100px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ws-pill-primary {
+  background: var(--accent-neon, #00f0ff);
+  color: #000;
+  border-color: var(--accent-neon, #00f0ff);
+}
+
+.ws-action-btn {
+  margin-top: 12px;
+  width: 100%;
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: var(--accent-neon, #00f0ff);
+  border-radius: 100px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ws-reveal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ws-input {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.ws-phrase-box {
+  margin-top: 12px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(234, 67, 53, 0.4);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.ws-phrase-words {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #fde68a;
+  word-spacing: 6px;
+}
+
+.ws-error {
+  color: #ea4335;
+  font-size: 0.8rem;
+}
+
+.ws-danger-btn {
+  background: rgba(234, 67, 53, 0.12);
+  border: 1px solid rgba(234, 67, 53, 0.4);
+  color: #f87171;
+  border-radius: 100px;
+  padding: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}

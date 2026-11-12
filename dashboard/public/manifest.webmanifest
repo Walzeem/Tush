@@ -1,0 +1,24 @@
+{
+  "name": "Tush Wallet — Stellar & Soroban",
+  "short_name": "Tush Wallet",
+  "description": "Self-custodial Stellar & Soroban wallet with universal @tag SEP-2 identity, SEP-5 vault security, DEX swaps, and SEP-7/SEP-43 support.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0d12",
+  "theme_color": "#00f0ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+stellar",
+      "url": "/?sep7=%s"
+    }
+  ]
+}

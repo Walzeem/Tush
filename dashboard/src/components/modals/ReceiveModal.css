@@ -5,30 +5,92 @@
   padding-bottom: 24px;
 }
 
+.receive-mode-tabs {
+  display: flex;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px;
+  border-radius: 100px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.receive-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.receive-tab.active {
+  background: var(--accent-neon, #00f0ff);
+  color: #000;
+}
+
 .qr-container {
   background: #fff;
   padding: 16px;
   border-radius: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .receive-tag {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 800;
   color: var(--accent-neon, #00f0ff);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .receive-address {
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   color: #888;
   word-break: break-all;
-  max-width: 80%;
+  max-width: 85%;
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
+}
+
+.sep7-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 16px;
+}
+
+.sep7-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 11px 14px;
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.sep7-input:focus {
+  border-color: var(--accent-neon, #00f0ff);
+}
+
+.receive-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
 }
 
 .copy-btn {
@@ -36,13 +98,17 @@
   color: var(--accent-neon, #00f0ff);
   border: 1px solid var(--accent-neon, #00f0ff);
   border-radius: 100px;
-  padding: 16px;
-  font-size: 1rem;
+  padding: 14px;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
-  max-width: 300px;
+}
+
+.copy-btn--secondary {
+  color: #d1d5db;
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .copy-btn:hover {

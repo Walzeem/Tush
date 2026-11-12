@@ -8,41 +8,52 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin-bottom: 24px;
+  gap: 6px;
+  margin-bottom: 16px;
 }
 
 .swap-card {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 16px;
 }
 
 .swap-card-header {
   color: #888;
-  font-size: 0.875rem;
-  margin-bottom: 12px;
+  font-size: 0.82rem;
+  margin-bottom: 10px;
 }
 
 .swap-card-body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
 }
 
-.swap-asset-selector {
+.swap-asset-select {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
-  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 14px;
   border-radius: 100px;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.swap-asset-select option {
+  background: #14161c;
+  color: #fff;
 }
 
 .swap-input {
   background: transparent;
   border: none;
   color: #fff;
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 700;
   outline: none;
   width: 60%;
@@ -61,19 +72,58 @@
   height: 40px;
   border-radius: 50%;
   background: var(--bg-card, #141416);
-  border: 4px solid var(--bg-card, #141416);
-  color: #fff;
+  border: 3px solid rgba(0, 240, 255, 0.4);
+  color: var(--accent-neon, #00f0ff);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 10;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  transition: transform 0.2s;
 }
 
-.swap-rate {
-  color: #888;
-  font-size: 0.875rem;
+.swap-switch-btn:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.swap-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: #9ca3af;
+  font-size: 0.82rem;
+  margin-bottom: 12px;
+}
+
+.swap-slippage {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.slippage-pill {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #d1d5db;
+  border-radius: 100px;
+  padding: 3px 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.slippage-pill.active {
+  background: var(--accent-neon, #00f0ff);
+  color: #000;
+  border-color: var(--accent-neon, #00f0ff);
+  font-weight: 700;
+}
+
+.swap-route-badge {
   text-align: center;
-  margin-bottom: 8px;
+  font-size: 0.78rem;
+  color: var(--accent-neon, #00f0ff);
+  margin-bottom: 14px;
 }

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import type { Keypair } from '@stellar/stellar-sdk';
 import {
   MIN_PASSWORD_LENGTH,
@@ -8,6 +8,7 @@ import {
   migrateLegacySecret,
   unlock,
 } from '../utils/vault';
+import { registerSep43Provider } from '../utils/sep43Provider';
 import { VaultContext, CANCELLED } from './vaultContext';
 import './VaultProvider.css';
 
@@ -46,6 +47,10 @@ export default function VaultProvider({ children }: { children: ReactNode }) {
     setPrompt({ migrate: hasLegacySecret() });
     return promise;
   }, []);
+
+  useEffect(() => {
+    registerSep43Provider(ensureUnlocked);
+  }, [ensureUnlocked]);
 
   const cancel = () => {
     pending.current?.reject(new Error(CANCELLED));

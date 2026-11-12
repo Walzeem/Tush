@@ -36,6 +36,8 @@ Every wallet created or imported in Tush can claim a human-readable **`@tag`** (
 | **SEP-1** | Stellar Info File (`/.well-known/stellar.toml`) | `backend/src/routes/wellKnown.ts` |
 | **SEP-2** | Federation Protocol (`GET /federation?q=...&type=name\|id`) | `backend/src/routes/tags.ts` & `dashboard/src/utils/tags.ts` |
 | **SEP-5** | Key Derivation (`BIP-39` + `SLIP-10 ed25519` at `m/44'/148'/i'`) | `dashboard/src/utils/sep5.ts` |
+| **SEP-7** | URI Scheme for Payment & Transaction Requests (`web+stellar:pay`) | `dashboard/src/utils/sep7.ts`, `ReceiveModal.tsx`, `SendModal.tsx` |
+| **SEP-43** | Wallet Standard Provider (`window.tushWallet`) | `dashboard/src/utils/sep43Provider.ts` & `WalletSettingsModal.tsx` |
 | **SEP-53** | Sign and Verify Messages (`Stellar Signed Message:\n` + SHA-256) | `dashboard/src/utils/tags.ts` & `backend/src/signature.ts` |
 
 ---
@@ -228,3 +230,4 @@ npm run build     # Typechecks and builds the production bundle into dashboard/d
 ## License
 
 MIT
+

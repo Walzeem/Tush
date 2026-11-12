@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MIN_PASSWORD_LENGTH, createVaultFromMnemonic } from '../../utils/vault';
 import { isValidMnemonic, newMnemonic } from '../../utils/sep5';
+import { registerDevicePasskey } from '../../utils/passkeyAuth';
 import './CreateWalletModal.css';
 
 const pickVerifyIndexes = (): number[] => {
@@ -9,7 +10,17 @@ const pickVerifyIndexes = (): number[] => {
   return [...set].sort((a, b) => a - b);
 };
 
-function PasswordFields({ password, setPassword, confirm, setConfirm }) {
+function PasswordFields({
+  password,
+  setPassword,
+  confirm,
+  setConfirm,
+}: {
+  password: string;
+  setPassword: (v: string) => void;
+  confirm: string;
+  setConfirm: (v: string) => void;
+}) {
   return (
     <>
       <input
@@ -32,8 +43,12 @@ function PasswordFields({ password, setPassword, confirm, setConfirm }) {
   );
 }
 
-export default function CreateWalletModal({ onWalletCreated }) {
-  const [view, setView] = useState('select'); // select | password | phrase | verify | import
+export default function CreateWalletModal({
+  onWalletCreated,
+}: {
+  onWalletCreated?: (address: string) => void;
+}) {
+  const [view, setView] = useState<'select' | 'password' | 'phrase' | 'verify' | 'import' | 'passkey'>('select');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [mnemonic, setMnemonic] = useState('');
@@ -57,14 +72,32 @@ export default function CreateWalletModal({ onWalletCreated }) {
     return true;
   };
 
-  const finish = async (phrase) => {
+  const finish = async (phrase: string) => {
     setBusy(true);
     setError('');
     try {
       const address = await createVaultFromMnemonic(phrase, password);
       onWalletCreated?.(address);
-    } catch (err) {
-      setError(err.message);
+    } catch (err: any) {
+      setError(err?.message || 'Failed to create wallet.');
+      setBusy(false);
+    }
+  };
+
+  const handlePasskeyCreate = async () => {
+    if (!checkPassword()) return;
+    setBusy(true);
+    setError('');
+    try {
+      const credential = await registerDevicePasskey();
+      if (credential?.id) {
+        localStorage.setItem('tush_passkey_id', credential.id);
+      }
+      const phrase = newMnemonic();
+      const address = await createVaultFromMnemonic(phrase, password);
+      onWalletCreated?.(address);
+    } catch (err: any) {
+      setError(err?.message || 'Passkey registration was cancelled or failed.');
       setBusy(false);
     }
   };
@@ -73,6 +106,25 @@ export default function CreateWalletModal({ onWalletCreated }) {
     setError('');
     setView('select');
   };
+
+  if (view === 'passkey') {
+    return (
+      <div className="create-wallet-modal">
+        <h2 className="modal-title">Create with Passkey</h2>
+        <p className="cw-note">
+          Uses your device's biometric authenticator (Windows Hello, Touch ID, or Face ID) paired with an encrypted local vault.
+        </p>
+        <PasswordFields {...{ password, setPassword, confirm, setConfirm }} />
+        {error && <div className="cw-error">{error}</div>}
+        <button className="saved-phrase-btn" onClick={handlePasskeyCreate} disabled={busy}>
+          {busy ? 'Waiting for Passkey…' : 'Register Passkey & Create Wallet'}
+        </button>
+        <button className="cw-back" onClick={goSelect} disabled={busy}>
+          Back
+        </button>
+      </div>
+    );
+  }
 
   if (view === 'password') {
     return (
@@ -92,7 +144,9 @@ export default function CreateWalletModal({ onWalletCreated }) {
         >
           Continue
         </button>
-        <button className="cw-back" onClick={goSelect}>Back</button>
+        <button className="cw-back" onClick={goSelect}>
+          Back
+        </button>
       </div>
     );
   }
@@ -145,7 +199,9 @@ export default function CreateWalletModal({ onWalletCreated }) {
         >
           {busy ? 'Creating wallet…' : 'Create wallet'}
         </button>
-        <button className="cw-back" onClick={() => setView('phrase')} disabled={busy}>Back to phrase</button>
+        <button className="cw-back" onClick={() => setView('phrase')} disabled={busy}>
+          Back to phrase
+        </button>
       </div>
     );
   }
@@ -162,7 +218,10 @@ export default function CreateWalletModal({ onWalletCreated }) {
           autoComplete="off"
           spellCheck={false}
           value={importPhrase}
-          onChange={(e) => { setImportPhrase(e.target.value); setError(''); }}
+          onChange={(e) => {
+            setImportPhrase(e.target.value);
+            setError('');
+          }}
         />
         <PasswordFields {...{ password, setPassword, confirm, setConfirm }} />
         {error && <div className="cw-error">{error}</div>}
@@ -180,21 +239,32 @@ export default function CreateWalletModal({ onWalletCreated }) {
         >
           {busy ? 'Importing…' : 'Import wallet'}
         </button>
-        <button className="cw-back" onClick={goSelect} disabled={busy}>Back</button>
+        <button className="cw-back" onClick={goSelect} disabled={busy}>
+          Back
+        </button>
       </div>
     );
   }
 
   return (
     <div className="create-wallet-modal">
-      <h2 className="modal-title">Create Wallet</h2>
-      <p className="cw-note">Your keys never leave this device. No account or email needed.</p>
+      <h2 className="modal-title">Create or Import Wallet</h2>
+      <p className="cw-note">Self-custodial Stellar wallet. Your keys never leave this device.</p>
       <button className="saved-phrase-btn cw-first" onClick={() => setView('password')}>
-        Create new wallet
+        Create with Recovery Phrase (SEP-5)
       </button>
-      <div className="divider"><span>or</span></div>
+      <button
+        className="seed-phrase-btn"
+        style={{ marginTop: '12px' }}
+        onClick={() => setView('passkey')}
+      >
+        🔑 Create with Passkey (Biometric)
+      </button>
+      <div className="divider">
+        <span>or</span>
+      </div>
       <button className="seed-phrase-btn" onClick={() => setView('import')}>
-        Import with recovery phrase
+        Import Existing Recovery Phrase
       </button>
     </div>
   );

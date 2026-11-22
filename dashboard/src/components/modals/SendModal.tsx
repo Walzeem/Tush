@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import * as StellarSdk from '@stellar/stellar-sdk';
 import toast from 'react-hot-toast';
 import { useVault, CANCELLED } from '../vaultContext';
+import { useTxMotion } from '../tx/txContext';
 import { resolveRecipient, type RecipientResolution } from '../../utils/tags';
 import { parseSep7Uri, type Sep7PayRequest } from '../../utils/sep7';
 import './SendModal.css';
@@ -24,6 +25,7 @@ export default function SendModal({
   const [sendAmount, setSendAmount] = useState(() => initialRequest?.amount || '');
   const [memo, setMemo] = useState(() => initialRequest?.memo || '');
   const [isSending, setIsSending] = useState(false);
+  const tx = useTxMotion();
 
   const handleDestinationInput = (rawVal: string) => {
     // If the user pastes a SEP-7 URI (`web+stellar:pay?...`) or shareable link (`?sep7=...`),
@@ -64,6 +66,7 @@ export default function SendModal({
 
   const executeSend = async () => {
     setIsSending(true);
+    let submitted = false;
     try {
       if (!sendAmount || isNaN(Number(sendAmount)) || Number(sendAmount) <= 0) {
         throw new Error('Invalid amount.');
@@ -73,6 +76,9 @@ export default function SendModal({
       if (target.error || !target.address) throw new Error(target.error || 'Invalid recipient.');
 
       const sourceKeypair = await ensureUnlocked();
+      const recipientLabel = target.tag || `${target.address.slice(0, 4)}…${target.address.slice(-4)}`;
+      tx.start({ kind: 'send', title: `Sending ${sendAmount} XLM`, subtitle: `to ${recipientLabel}` });
+      submitted = true;
       const server = new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
 
       const sourceAccount = await server.loadAccount(sourceKeypair.publicKey());
@@ -97,7 +103,7 @@ export default function SendModal({
       const response = await server.submitTransaction(transaction);
 
       console.log(`Send success! Hash: ${response.hash}`);
-      toast.success(`Sent ${sendAmount} XLM${target.tag ? ` to ${target.tag}` : ''}`);
+      tx.succeed({ title: `Sent ${sendAmount} XLM`, subtitle: `to ${recipientLabel}`, hash: response.hash });
 
       setDestination('');
       setSendAmount('');
@@ -107,7 +113,8 @@ export default function SendModal({
     } catch (error: any) {
       if (error?.message !== CANCELLED) {
         console.error('Send error:', error);
-        toast.error(error?.message || 'Failed to send transaction.');
+        if (submitted) tx.fail(error);
+        else toast.error(error?.message || 'Failed to send transaction.');
       }
     } finally {
       setIsSending(false);

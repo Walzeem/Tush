@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import * as StellarSdk from '@stellar/stellar-sdk';
 import toast from 'react-hot-toast';
 import { useVault, CANCELLED } from '../vaultContext';
+import { useTxMotion } from '../tx/txContext';
 import './SwapModal.css';
 
 interface SwapAsset {
@@ -49,6 +50,7 @@ export default function SwapModal({ onSuccess }: { onSuccess?: () => void }) {
     source: 'dex' | 'reference';
   } | null>(null);
   const [isSwapping, setIsSwapping] = useState(false);
+  const txMotion = useTxMotion();
 
   const fromAsset = SUPPORTED_SWAP_ASSETS.find((a) => a.code === fromCode) || SUPPORTED_SWAP_ASSETS[0];
   const toAsset = SUPPORTED_SWAP_ASSETS.find((a) => a.code === toCode) || SUPPORTED_SWAP_ASSETS[1];
@@ -129,8 +131,15 @@ export default function SwapModal({ onSuccess }: { onSuccess?: () => void }) {
     if (!amt || amt <= 0 || !quote) return;
 
     setIsSwapping(true);
+    let submitted = false;
     try {
       const keypair = await ensureUnlocked();
+      txMotion.start({
+        kind: 'swap',
+        title: `Swapping ${amt} ${fromAsset.code}`,
+        subtitle: `for ≈ ${quote.destAmount} ${toAsset.code}`,
+      });
+      submitted = true;
       const server = new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
       const account = await server.loadAccount(keypair.publicKey());
 
@@ -180,16 +189,21 @@ export default function SwapModal({ onSuccess }: { onSuccess?: () => void }) {
 
       const tx = builder.setTimeout(30).build();
       tx.sign(keypair);
-      await server.submitTransaction(tx);
+      const res = await server.submitTransaction(tx);
 
-      toast.success(`Swapped ${amt} ${fromAsset.code} → ${quote.destAmount} ${toAsset.code}`);
+      txMotion.succeed({
+        title: `Swapped ${amt} ${fromAsset.code}`,
+        subtitle: `for ${quote.destAmount} ${toAsset.code}`,
+        hash: res.hash,
+      });
       setPayAmount('');
       setQuoteEntry(null);
       onSuccess?.();
     } catch (err: any) {
       if (err?.message !== CANCELLED) {
         console.error('Swap failed:', err);
-        toast.error(err?.message || 'Swap failed on Stellar Testnet.');
+        if (submitted) txMotion.fail(err, 'Swap failed');
+        else toast.error(err?.message || 'Swap failed on Stellar Testnet.');
       }
     } finally {
       setIsSwapping(false);

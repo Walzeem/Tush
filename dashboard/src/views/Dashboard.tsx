@@ -35,6 +35,7 @@ import { getCachedTag, setCachedTag, syncTag } from '../utils/tags';
 import { parseSep7Uri, type Sep7PayRequest } from '../utils/sep7';
 import { motion } from 'motion/react';
 import { CountUp, TiltCard } from '../motion';
+import { useTxMotion } from '../components/tx/txContext';
 
 function Dashboard({
   userPublicKey,
@@ -71,6 +72,7 @@ function Dashboard({
   }
   const [nameTag, setNameTag] = useState('')
   const { ensureUnlocked } = useVault();
+  const txMotion = useTxMotion();
   const [activeModal, setActiveModal] = useState(null);
   const [showRecent, setShowRecent] = useState(false);
   const { recentAddresses, saveAddress, clearAddresses } = useRecentAddresses();
@@ -93,7 +95,7 @@ function Dashboard({
     color: "#1F2937",
     bgColor: "#F3F4F6",
   });
-  
+
   const [xlmBalance, setXlmBalance] = useState('0.00');
   const [usdcBalance, setUsdcBalance] = useState('0.00');
   const [isFetchingBalances, setIsFetchingBalances] = useState(false);
@@ -196,7 +198,7 @@ function Dashboard({
     try {
       const server = new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
       const account = await server.loadAccount(activeWallet);
-      
+
       let newXlm = '0.00';
       let newUsdc = '0.00';
       let usdcActive = false;
@@ -241,15 +243,18 @@ function Dashboard({
 
   const activateUSDC = async () => {
     setIsActivatingUSDC(true);
+    let submitted = false;
     try {
       const sourceKeypair = await ensureUnlocked();
+      txMotion.start({ kind: 'trust', title: 'Activating USDC', subtitle: 'Adding a trustline to your account' });
+      submitted = true;
       const server = new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
       const account = await server.loadAccount(sourceKeypair.publicKey());
-      
+
       // Generate a valid mock issuer for the testnet prototype
       const mockIssuer = StellarSdk.Keypair.random().publicKey();
       const usdcAsset = new StellarSdk.Asset('USDC', mockIssuer);
-      
+
       const transaction = new StellarSdk.TransactionBuilder(account, {
         fee: StellarSdk.BASE_FEE,
         networkPassphrase: StellarSdk.Networks.TESTNET
@@ -260,16 +265,17 @@ function Dashboard({
       }))
       .setTimeout(30)
       .build();
-      
+
       transaction.sign(sourceKeypair);
-      await server.submitTransaction(transaction);
-      
-      toast.success("USDC activated successfully!");
+      const res = await server.submitTransaction(transaction);
+
+      txMotion.succeed({ title: 'USDC activated', subtitle: 'You can now hold and receive USDC', hash: res.hash });
       await fetchBalances();
     } catch (error) {
       if (error.message !== CANCELLED) {
         console.error("Failed to activate USDC:", error);
-        toast.error("Network error while activating USDC.");
+        if (submitted) txMotion.fail(error, "Couldn't activate USDC");
+        else toast.error("Network error while activating USDC.");
       }
     } finally {
       setIsActivatingUSDC(false);
@@ -279,17 +285,22 @@ function Dashboard({
   const fundWallet = async () => {
     if (!activeWallet) return;
     setIsFunding(true);
+    txMotion.start({ kind: 'fund', title: 'Funding your wallet', subtitle: '10,000 test XLM from Friendbot' });
     try {
       const response = await fetch(`https://friendbot.stellar.org?addr=${activeWallet}`);
       if (response.ok) {
-        toast.success("Wallet funded successfully!");
+        const body = await response.json().catch(() => ({}));
+        txMotion.succeed({ title: 'Wallet funded', subtitle: '+10,000 XLM (testnet)', hash: body?.hash });
         await fetchBalances();
       } else {
-        toast.error("Failed to fund wallet with Friendbot.");
+        txMotion.fail(
+          new Error('Friendbot only funds new accounts once. This wallet may already be funded.'),
+          "Couldn't fund wallet",
+        );
       }
     } catch (error) {
       console.error("Funding error:", error);
-      toast.error("Network error while funding.");
+      txMotion.fail(error, "Couldn't fund wallet");
     } finally {
       setIsFunding(false);
     }
@@ -301,8 +312,11 @@ function Dashboard({
       return;
     }
     setIsMintingBadge(true);
+    let submitted = false;
     try {
       const kp = await ensureUnlocked();
+      txMotion.start({ kind: 'mint', title: `Minting ${userTag}`, subtitle: 'Anchoring your tag on the Stellar ledger' });
+      submitted = true;
       const server = new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
       const account = await server.loadAccount(kp.publicKey());
       const tx = new StellarSdk.TransactionBuilder(account, {
@@ -318,12 +332,13 @@ function Dashboard({
         .setTimeout(30)
         .build();
       tx.sign(kp);
-      await server.submitTransaction(tx);
-      toast.success(`Minted ${userTag} Identity Badge on Stellar!`);
+      const res = await server.submitTransaction(tx);
+      txMotion.succeed({ title: `${userTag} is on-chain`, subtitle: 'Your identity badge is minted', hash: res.hash });
       await fetchBalances();
     } catch (err: any) {
       if (err?.message !== CANCELLED) {
-        toast.error(err?.message || 'Failed to mint identity badge.');
+        if (submitted) txMotion.fail(err, "Couldn't mint badge");
+        else toast.error(err?.message || 'Failed to mint identity badge.');
       }
     } finally {
       setIsMintingBadge(false);
@@ -337,8 +352,11 @@ function Dashboard({
       return;
     }
     setIsStaking(true);
+    let submitted = false;
     try {
       const kp = await ensureUnlocked();
+      txMotion.start({ kind: 'stake', title: `Staking ${amt} XLM`, subtitle: 'Stellar Yield Vault · 4.8% APY' });
+      submitted = true;
       const server = new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
       const account = await server.loadAccount(kp.publicKey());
       const prevStaked = parseFloat(onChainData['tush.stake.xlm'] || '0') || 0;
@@ -356,13 +374,14 @@ function Dashboard({
         .setTimeout(30)
         .build();
       tx.sign(kp);
-      await server.submitTransaction(tx);
-      toast.success(`Staked ${amt} XLM into Stellar Yield Vault (4.8% APY)!`);
+      const res = await server.submitTransaction(tx);
+      txMotion.succeed({ title: `Staked ${amt} XLM`, subtitle: 'Earning 4.8% APY', hash: res.hash });
       setStakeAmount('');
       await fetchBalances();
     } catch (err: any) {
       if (err?.message !== CANCELLED) {
-        toast.error(err?.message || 'Failed to stake XLM.');
+        if (submitted) txMotion.fail(err, "Couldn't stake XLM");
+        else toast.error(err?.message || 'Failed to stake XLM.');
       }
     } finally {
       setIsStaking(false);
@@ -437,7 +456,7 @@ function Dashboard({
             "#FEF3C7",
           );
           // Change "new" to "skipped" to break the infinite redirect loop
-          onRegistrationStateChange("skipped"); 
+          onRegistrationStateChange("skipped");
           return;
         }
 

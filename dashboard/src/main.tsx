@@ -5,11 +5,14 @@ import './App.css'
 import './styles/wallet-motion.css'
 import App from './App'
 import VaultProvider from './components/VaultProvider'
+import TxMotionProvider from './components/tx/TxMotionProvider'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <VaultProvider>
-      <App />
+      <TxMotionProvider>
+        <App />
+      </TxMotionProvider>
     </VaultProvider>
   </StrictMode>,
 )

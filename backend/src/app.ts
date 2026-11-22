@@ -78,10 +78,10 @@ export function createApp({
   const readLimit = limiter(config.rateLimit.windowMs, config.rateLimit.readMax);
   const registerLimit = limiter(config.rateLimit.windowMs, config.rateLimit.registerMax);
 
-  app.get('/health', (_req, res) => {
+  app.get('/health', async (_req, res) => {
     let database = 'down';
     try {
-      database = db.ping() ? 'up' : 'down';
+      database = (await db.ping()) ? 'up' : 'down';
     } catch {
       /* reported as down */
     }

@@ -8,6 +8,7 @@ import type { ErrorReporter } from './alerts.ts';
 export function runBackup(db: TagDatabase, dir: string, keep: number): string {
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
   const dest = join(dir, `tags-${stamp}.db`);
+  if (!db.backup) throw new Error('backups are only built in for SQLite');
   db.backup(dest);
   const old = readdirSync(dir)
     .filter((f) => /^tags-.*\.db$/.test(f))
@@ -23,7 +24,8 @@ export function scheduleBackups(
   { dir, intervalHours, keep }: { dir: string; intervalHours: number; keep: number },
   reportError: ErrorReporter,
 ): () => void {
-  if (!dir || intervalHours === 0) return () => {};
+  // Postgres/Supabase is backed up outside the app (see .github/workflows/db-backup.yml).
+  if (!dir || intervalHours === 0 || !db.backup) return () => {};
   const tick = () => {
     try {
       console.log(`backup written: ${runBackup(db, dir, keep)}`);

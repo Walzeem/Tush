@@ -7,6 +7,10 @@ import { Keypair } from '@stellar/stellar-base';
 import { loadConfig } from '../src/config.ts';
 import { openDatabase, type TagDatabase } from '../src/db.ts';
 import { createApp } from '../src/app.ts';
+import { openPostgres } from '../src/pgdb.ts';
+
+// Runs the API suite on SQLite, and on Postgres too when TEST_DATABASE_URL is set.
+const BACKENDS: Array<'sqlite' | 'postgres'> = process.env.TEST_DATABASE_URL ? ['sqlite', 'postgres'] : ['sqlite'];
 
 const SEP53_PREFIX = 'Stellar Signed Message:\n';
 
@@ -21,7 +25,7 @@ function signRaw(keypair: Keypair, message: string): string {
   return keypair.sign(Buffer.from(message, 'utf8')).toString('base64');
 }
 
-describe('Tush SEP-2 Federation & Tag Server (TypeScript)', () => {
+for (const backend of BACKENDS) describe(`Tush SEP-2 Federation & Tag Server (${backend})`, () => {
   let server: Server;
   let db: TagDatabase;
   let baseUrl: string;
@@ -36,7 +40,16 @@ describe('Tush SEP-2 Federation & Tag Server (TypeScript)', () => {
       RATE_LIMIT_READ_MAX: '500',
       RATE_LIMIT_REGISTER_MAX: '500',
     });
-    db = openDatabase(':memory:');
+    if (backend === 'postgres') {
+      db = await openPostgres(process.env.TEST_DATABASE_URL!);
+      const { default: pg } = await import('pg');
+      const c = new pg.Client(process.env.TEST_DATABASE_URL);
+      await c.connect();
+      await c.query('truncate public.tags');
+      await c.end();
+    } else {
+      db = openDatabase(':memory:');
+    }
     const app = createApp({ config, db });
     await new Promise<void>((resolve) => {
       server = app.listen(0, '127.0.0.1', () => {
@@ -49,7 +62,7 @@ describe('Tush SEP-2 Federation & Tag Server (TypeScript)', () => {
 
   after(async () => {
     await new Promise<void>((resolve) => server.close(() => resolve()));
-    db.close();
+    await db.close();
   });
 
   it('serves health and SEP-1 stellar.toml with proper federation URL', async () => {
@@ -221,6 +234,24 @@ describe('Tush SEP-2 Federation & Tag Server (TypeScript)', () => {
     assert.equal(r3.status, 409);
   });
 
+  it('holds the tag limit and single primary under concurrent registrations', async () => {
+    const kp = Keypair.random();
+    const addr = kp.publicKey();
+    const names = ['race1', 'race2', 'race3', 'race4', 'race5'];
+    const results = await Promise.all(
+      names.map((name) =>
+        fetch(`${baseUrl}/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: name, address: addr, signature: signSep53(kp, `register:${name}:${addr}`) }),
+        }).then((r) => r.status),
+      ),
+    );
+    assert.equal(results.filter((s) => s === 201).length, 2, `limit is 2, got ${results}`);
+    assert.equal(results.filter((s) => s === 409).length, 3);
+    assert.ok(await db.findPrimaryByAddress(addr));
+  });
+
   it('ignores privileged fields sent in the request body (mass assignment)', async () => {
     const user = Keypair.random();
     const addr = user.publicKey();
@@ -249,10 +280,10 @@ describe('Tush SEP-2 Federation & Tag Server (TypeScript)', () => {
     assert.equal(body.is_primary, false);
     assert.equal('role' in body || 'isAdmin' in body, false);
 
-    const row = db.findByName('secondtag');
+    const row = await db.findByName('secondtag');
     assert.equal(row?.is_primary, 0);
     assert.notEqual(row?.created_at, '2000-01-01T00:00:00.000Z');
-    assert.equal(db.findPrimaryByAddress(addr)?.username, 'firsttag');
+    assert.equal((await db.findPrimaryByAddress(addr))?.username, 'firsttag');
 
     // A signature for one address cannot register a tag for another.
     const other = Keypair.random();
@@ -276,7 +307,7 @@ describe('database safety', () => {
     const dir = mkdtempSync(join(tmpdir(), 'tush-backup-'));
     const live = openDatabase(join(dir, 'live.db'));
     const kp = Keypair.random();
-    live.register({ username: 'backedup', address: kp.publicKey(), memo_type: null, memo: null }, 3);
+    await live.register({ username: 'backedup', address: kp.publicKey(), memo_type: null, memo: null }, 3);
 
     const backupDir = join(dir, 'backups');
     const first = runBackup(live, backupDir, 2);
@@ -287,10 +318,10 @@ describe('database safety', () => {
     assert.equal(readdirSync(backupDir).length, 2, 'old backups are pruned');
 
     const restored = openDatabase(join(backupDir, readdirSync(backupDir).sort().at(-1)!));
-    assert.equal(restored.findByName('backedup')?.address, kp.publicKey());
+    assert.equal((await restored.findByName('backedup'))?.address, kp.publicKey());
     assert.ok(first.endsWith('.db'));
-    restored.close();
-    live.close();
+    await restored.close();
+    await live.close();
   });
 });
 

@@ -4,9 +4,10 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: ./Dockerfile
-    # The free plan has no persistent disk: every deploy, restart or spin-down
-    # wipes /app/data/tags.db and every claimed @tag with it. Before real users,
-    # switch to a paid plan and uncomment the disk below (about $7/mo + $0.25/GB).
+    # The free plan has no persistent disk, so tags must live in Supabase:
+    # set DATABASE_URL below. Without it the server falls back to SQLite in the
+    # container, and every deploy, restart or spin-down wipes every @tag.
+    # (Alternative: paid plan + the disk below, and leave DATABASE_URL empty.)
     plan: free
     # disk:
     #   name: tush-data
@@ -23,6 +24,9 @@ services:
         value: "*"
       - key: TRUST_PROXY
         value: "1"
+      # Supabase > Connect > Session pooler connection string (IPv4), port 5432.
+      - key: DATABASE_URL
+        sync: false
       # Set to 1 once the disk above is mounted (silences the startup warning).
       - key: TUSH_PERSISTENT_DISK
         sync: false

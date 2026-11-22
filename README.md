@@ -155,8 +155,13 @@ npm run dev
 
 The tag server stores every claimed `@tag` in one SQLite file. Before inviting real users:
 
-1. **Persistent disk (must do).** Render's free plan has no disk, so each deploy, restart or spin-down wipes `tags.db` and every tag. Move to a paid instance, uncomment the `disk:` block in `render.yaml` (mount at `/app/data`) and set `TUSH_PERSISTENT_DISK=1`. On Railway, attach a volume at `/app/data`. Run **one** instance only: SQLite and the in-memory rate limiter are per-instance.
-2. **Backups.** With `BACKUP_DIR` set, the server writes a `VACUUM INTO` snapshot on boot and every `BACKUP_INTERVAL_HOURS`, keeping the newest `BACKUP_KEEP`. These sit on the same disk, so also copy one off the box weekly (or download it from the Render shell). Restore = stop the service, copy a snapshot over `DB_PATH`, start it.
+1. **Persistent database (must do).** Render's free plan has no disk, so SQLite in the container loses every tag on each deploy, restart or spin-down. Use Supabase instead:
+   - Create a Supabase project, open **Connect** and copy the **Session pooler** URI (IPv4, port 5432).
+   - Set it as `DATABASE_URL` on the Render service. On boot the server creates the `tags` table from `backend/supabase/schema.sql` and turns on row level security, so the table is not reachable through Supabase's public API.
+   - Free Supabase projects pause after about a week with no traffic; restore from the dashboard, or upgrade once you have real users.
+   - Alternative: a paid Render instance with the `disk:` block in `render.yaml` and `TUSH_PERSISTENT_DISK=1`.
+   Run **one** backend instance: the rate limiter is in memory.
+2. **Backups.** With Supabase, add repo secrets `SUPABASE_DB_URL` and `BACKUP_PASSPHRASE`; `.github/workflows/db-backup.yml` stores an encrypted dump every night for 30 days. With SQLite, `BACKUP_DIR` writes `VACUUM INTO` snapshots on boot and every `BACKUP_INTERVAL_HOURS` (newest `BACKUP_KEEP` kept).
 3. **Error alerts.** Set `ERROR_WEBHOOK_URL` to a Discord or Slack incoming webhook. Unhandled 500s, crashes and failed backups are posted there (same error at most once a minute), each with its correlation id.
 4. **Spend alerts.** Set a billing alert in Render (Workspace → Billing) and Vercel (Settings → Billing → Spend Management) before switching off the free tiers.
 5. **CORS.** Replace `CORS_ORIGINS=*` with the real frontend origins.

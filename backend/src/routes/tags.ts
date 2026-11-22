@@ -28,7 +28,7 @@ export function tagRoutes({
     return err;
   };
 
-  router.post('/register', registerLimit, (req, res) => {
+  router.post('/register', registerLimit, async (req, res) => {
     const body = req.body && typeof req.body === 'object' ? (req.body as Record<string, unknown>) : {};
     const issues: FieldIssue[] = [];
     const field = (name: string, message: string) => issues.push({ field: name, message });
@@ -58,7 +58,7 @@ export function tagRoutes({
       throw unauthenticated('Signature verification failed.');
     }
 
-    const { tag, created } = db.register({ username, address, ...memo }, config.maxTagsPerAddress);
+    const { tag, created } = await db.register({ username, address, ...memo }, config.maxTagsPerAddress);
     res.status(created ? 201 : 200).json({
       ok: true,
       username: toStellarAddress(tag.username),
@@ -69,7 +69,7 @@ export function tagRoutes({
     });
   });
 
-  router.get('/federation', readLimit, (req, res) => {
+  router.get('/federation', readLimit, async (req, res) => {
     const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
     const type = typeof req.query.type === 'string' ? req.query.type : '';
     if (!q || !type) {
@@ -90,11 +90,11 @@ export function tagRoutes({
       if (extra.length || (domain !== undefined && !allowedDomains.has(domain))) {
         throw sep2NotFound('Name tag not found');
       }
-      row = db.findByName(normalizeUsername(name));
+      row = await db.findByName(normalizeUsername(name));
       if (!row) throw sep2NotFound('Name tag not found');
     } else if (type === 'id') {
       if (!isValidAddress(q)) throw new AppError(400, 'BAD_REQUEST', 'q must be a valid Stellar address for type=id.');
-      row = db.findPrimaryByAddress(q);
+      row = await db.findPrimaryByAddress(q);
       if (!row) throw sep2NotFound('No tag found for that address');
     } else {
       throw new AppError(400, 'UNSUPPORTED_TYPE', `Federation type "${type}" is not supported. Use name or id.`);
@@ -107,12 +107,12 @@ export function tagRoutes({
     });
   });
 
-  router.get('/lookup', readLimit, (req, res) => {
+  router.get('/lookup', readLimit, async (req, res) => {
     const address = typeof req.query.address === 'string' ? req.query.address.trim() : '';
     if (!isValidAddress(address)) {
       throw validationError([{ field: 'address', message: 'address must be a valid Stellar public key (G...)' }]);
     }
-    const row = db.findPrimaryByAddress(address);
+    const row = await db.findPrimaryByAddress(address);
     if (!row) throw notFound('No username registered for this address');
     res.json({ username: toStellarAddress(row.username), address: row.address, ...memoFields(row) });
   });

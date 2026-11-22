@@ -13,6 +13,7 @@ export interface AppConfig {
   port: number;
   host: string;
   dbPath: string;
+  databaseUrl: string;
   federationDomain: string;
   publicUrl: string;
   corsOrigins: string[];
@@ -64,6 +65,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     port: toInt(env.PORT, 4000, 'PORT'),
     host: env.HOST || '0.0.0.0',
     dbPath: env.DB_PATH || './data/tags.db',
+    databaseUrl: env.DATABASE_URL || '',
     federationDomain,
     publicUrl: detectedPublicUrl ? detectedPublicUrl.replace(/\/+$/, '') : '',
     corsOrigins: toList(

@@ -1,0 +1,39 @@
+name: Nightly database backup
+
+# Supabase's free plan has no automatic backups. This dumps the tags table every
+# night, encrypts it, and keeps it as a workflow artifact for 30 days.
+# Repo secrets needed: SUPABASE_DB_URL (session pooler URI) and BACKUP_PASSPHRASE.
+# Restore: download the artifact, then
+#   gpg -d tags-*.sql.gpg | psql "$SUPABASE_DB_URL"
+
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Postgres 17 client
+        run: |
+          sudo apt-get install -y curl ca-certificates
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -fsSo /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update -q && sudo apt-get install -y -q postgresql-client-17
+      - name: Dump and encrypt
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          test -n "$SUPABASE_DB_URL" || { echo "SUPABASE_DB_URL secret is not set"; exit 1; }
+          file="tags-$(date -u +%Y%m%dT%H%MZ).sql"
+          /usr/lib/postgresql/17/bin/pg_dump "$SUPABASE_DB_URL" --table=public.tags --data-only --column-inserts --no-owner > "$file"
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$BACKUP_PASSPHRASE" -c "$file"
+          rm "$file"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tags-backup
+          path: tags-*.sql.gpg
+          retention-days: 30

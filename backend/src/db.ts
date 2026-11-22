@@ -13,17 +13,23 @@ export interface TagRecord {
   created_at: string;
 }
 
+export interface RegisterInput {
+  username: string;
+  address: string;
+  memo_type: string | null;
+  memo: string | null;
+}
+
+/** Storage used by the routes. Async so it can be backed by SQLite or Postgres. */
 export interface TagDatabase {
-  findByName(username: string): TagRecord | null;
-  findPrimaryByAddress(address: string): TagRecord | null;
-  register(
-    input: { username: string; address: string; memo_type: string | null; memo: string | null },
-    maxTagsPerAddress: number,
-  ): { tag: TagRecord; created: boolean };
-  ping(): boolean;
-  /** Writes a consistent, compacted copy of the live database to `destPath`. */
-  backup(destPath: string): void;
-  close(): void;
+  kind: 'sqlite' | 'postgres';
+  findByName(username: string): Promise<TagRecord | null>;
+  findPrimaryByAddress(address: string): Promise<TagRecord | null>;
+  register(input: RegisterInput, maxTagsPerAddress: number): Promise<{ tag: TagRecord; created: boolean }>;
+  ping(): Promise<boolean>;
+  /** SQLite only: writes a consistent, compacted copy of the live database to `destPath`. */
+  backup?(destPath: string): void;
+  close(): Promise<void>;
 }
 
 const SCHEMA = `
@@ -83,11 +89,12 @@ export function openDatabase(path: string): TagDatabase {
   );
 
   return {
-    findByName: (username: string) => (byName.get(username) as TagRecord | undefined) ?? null,
-    findPrimaryByAddress: (address: string) =>
+    kind: 'sqlite',
+    findByName: async (username: string) => (byName.get(username) as TagRecord | undefined) ?? null,
+    findPrimaryByAddress: async (address: string) =>
       (primaryByAddress.get(address) as TagRecord | undefined) ?? null,
 
-    register({ username, address, memo_type, memo }, maxTagsPerAddress) {
+    async register({ username, address, memo_type, memo }, maxTagsPerAddress) {
       db.exec('BEGIN IMMEDIATE');
       try {
         const existing = byName.get(username) as TagRecord | undefined;
@@ -122,8 +129,8 @@ export function openDatabase(path: string): TagDatabase {
       db.prepare('VACUUM INTO ?').run(destPath);
     },
 
-    ping: () => (db.prepare('SELECT 1 AS ok').get() as { ok: number }).ok === 1,
-    close: () => db.close(),
+    ping: async () => (db.prepare('SELECT 1 AS ok').get() as { ok: number }).ok === 1,
+    close: async () => db.close(),
   };
 }
 

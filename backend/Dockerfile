@@ -7,6 +7,7 @@ RUN npm ci --omit=dev
 
 COPY tsconfig.json ./
 COPY src ./src
+COPY supabase ./supabase
 
 RUN mkdir -p /app/data
 

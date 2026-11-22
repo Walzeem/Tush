@@ -19,6 +19,8 @@ export interface AppConfig {
   trustProxy: number;
   maxTagsPerAddress: number;
   rateLimit: RateLimitConfig;
+  errorWebhookUrl: string;
+  backup: { dir: string; intervalHours: number; keep: number };
 }
 
 const toList = (value: string | undefined, fallback: string): string[] =>
@@ -70,6 +72,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     ),
     trustProxy: toInt(env.TRUST_PROXY, isProduction ? 1 : 0, 'TRUST_PROXY'),
     maxTagsPerAddress: toInt(env.MAX_TAGS_PER_ADDRESS, 3, 'MAX_TAGS_PER_ADDRESS'),
+    errorWebhookUrl: env.ERROR_WEBHOOK_URL || '',
+    backup: {
+      dir: env.BACKUP_DIR || '',
+      intervalHours: toInt(env.BACKUP_INTERVAL_HOURS, 24, 'BACKUP_INTERVAL_HOURS'),
+      keep: toInt(env.BACKUP_KEEP, 7, 'BACKUP_KEEP'),
+    },
     rateLimit: {
       windowMs: toInt(env.RATE_LIMIT_WINDOW_MS, 60_000, 'RATE_LIMIT_WINDOW_MS'),
       readMax: toInt(env.RATE_LIMIT_READ_MAX, 120, 'RATE_LIMIT_READ_MAX'),

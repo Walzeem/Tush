@@ -4,14 +4,34 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: ./Dockerfile
+    # The free plan has no persistent disk: every deploy, restart or spin-down
+    # wipes /app/data/tags.db and every claimed @tag with it. Before real users,
+    # switch to a paid plan and uncomment the disk below (about $7/mo + $0.25/GB).
     plan: free
+    # disk:
+    #   name: tush-data
+    #   mountPath: /app/data
+    #   sizeGB: 1
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 4000
+      # Lock this to your real frontends, e.g. https://tush-wallet.vercel.app
       - key: CORS_ORIGINS
         value: "*"
       - key: TRUST_PROXY
         value: "1"
+      # Set to 1 once the disk above is mounted (silences the startup warning).
+      - key: TUSH_PERSISTENT_DISK
+        sync: false
+      # Discord/Slack webhook that receives server errors and failed backups.
+      - key: ERROR_WEBHOOK_URL
+        sync: false
+      - key: BACKUP_DIR
+        value: /app/data/backups
+      - key: BACKUP_INTERVAL_HOURS
+        value: "24"
+      - key: BACKUP_KEEP
+        value: "7"

@@ -21,11 +21,15 @@ export interface TagDatabase {
     maxTagsPerAddress: number,
   ): { tag: TagRecord; created: boolean };
   ping(): boolean;
+  /** Writes a consistent, compacted copy of the live database to `destPath`. */
+  backup(destPath: string): void;
   close(): void;
 }
 
 const SCHEMA = `
   PRAGMA journal_mode = WAL;
+  PRAGMA synchronous = NORMAL;
+  PRAGMA busy_timeout = 5000;
   PRAGMA foreign_keys = ON;
 
   CREATE TABLE IF NOT EXISTS tags (
@@ -41,10 +45,35 @@ const SCHEMA = `
   CREATE UNIQUE INDEX IF NOT EXISTS tags_one_primary_idx ON tags (address) WHERE is_primary = 1;
 `;
 
+// Additive, numbered schema changes. Each entry runs once, inside a transaction,
+// and bumps PRAGMA user_version, so a deploy never re-runs or half-applies one.
+// Rules for live data: only add tables, columns (with defaults) or indexes here;
+// never drop or rename in the same deploy that stops using something.
+const MIGRATIONS: string[] = [
+  // 1: baseline marker for databases created before versioning existed.
+  'SELECT 1',
+];
+
+function migrate(db: DatabaseSync): void {
+  const { user_version: current } = db.prepare('PRAGMA user_version').get() as { user_version: number };
+  for (let v = current; v < MIGRATIONS.length; v += 1) {
+    db.exec('BEGIN IMMEDIATE');
+    try {
+      db.exec(MIGRATIONS[v]);
+      db.exec(`PRAGMA user_version = ${v + 1}`);
+      db.exec('COMMIT');
+    } catch (err) {
+      db.exec('ROLLBACK');
+      throw err;
+    }
+  }
+}
+
 export function openDatabase(path: string): TagDatabase {
   if (path !== ':memory:') mkdirSync(dirname(path), { recursive: true });
   const db = new DatabaseSync(path);
   db.exec(SCHEMA);
+  migrate(db);
 
   const byName = db.prepare('SELECT * FROM tags WHERE username = ?');
   const primaryByAddress = db.prepare('SELECT * FROM tags WHERE address = ? AND is_primary = 1');
@@ -85,6 +114,12 @@ export function openDatabase(path: string): TagDatabase {
         if (db.isTransaction) db.exec('ROLLBACK');
         throw err;
       }
+    },
+
+    backup(destPath: string) {
+      mkdirSync(dirname(destPath), { recursive: true });
+      // VACUUM INTO takes a read transaction, so it is safe while the server is live.
+      db.prepare('VACUUM INTO ?').run(destPath);
     },
 
     ping: () => (db.prepare('SELECT 1 AS ok').get() as { ok: number }).ok === 1,

@@ -151,6 +151,17 @@ npm run dev
 
 ---
 
+## Running for Real Users (1,000-user checklist)
+
+The tag server stores every claimed `@tag` in one SQLite file. Before inviting real users:
+
+1. **Persistent disk (must do).** Render's free plan has no disk, so each deploy, restart or spin-down wipes `tags.db` and every tag. Move to a paid instance, uncomment the `disk:` block in `render.yaml` (mount at `/app/data`) and set `TUSH_PERSISTENT_DISK=1`. On Railway, attach a volume at `/app/data`. Run **one** instance only: SQLite and the in-memory rate limiter are per-instance.
+2. **Backups.** With `BACKUP_DIR` set, the server writes a `VACUUM INTO` snapshot on boot and every `BACKUP_INTERVAL_HOURS`, keeping the newest `BACKUP_KEEP`. These sit on the same disk, so also copy one off the box weekly (or download it from the Render shell). Restore = stop the service, copy a snapshot over `DB_PATH`, start it.
+3. **Error alerts.** Set `ERROR_WEBHOOK_URL` to a Discord or Slack incoming webhook. Unhandled 500s, crashes and failed backups are posted there (same error at most once a minute), each with its correlation id.
+4. **Spend alerts.** Set a billing alert in Render (Workspace → Billing) and Vercel (Settings → Billing → Spend Management) before switching off the free tiers.
+5. **CORS.** Replace `CORS_ORIGINS=*` with the real frontend origins.
+6. **Rollback.** CI (`.github/workflows/ci.yml`) runs backend tests and the dashboard build on every PR. To roll back, use "Rollback" on a previous deploy in Render/Vercel. Schema changes go in `MIGRATIONS` in `backend/src/db.ts`: additive only, so an older build still runs against a newer database.
+
 ## Backend API Reference
 
 ### `POST /register`

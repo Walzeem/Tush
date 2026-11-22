@@ -7,6 +7,7 @@ import type { TagDatabase } from './db.ts';
 import { AppError, notFound, type FieldIssue } from './errors.ts';
 import { tagRoutes } from './routes/tags.ts';
 import { wellKnownRoutes } from './routes/wellKnown.ts';
+import type { ErrorReporter } from './alerts.ts';
 
 const envelope = (
   res: Response,
@@ -30,7 +31,15 @@ const limiter = (windowMs: number, limit: number) =>
     handler: (_req, res) => envelope(res, 429, 'RATE_LIMITED', 'Too many requests. Please slow down.'),
   });
 
-export function createApp({ config, db }: { config: AppConfig; db: TagDatabase }): Express {
+export function createApp({
+  config,
+  db,
+  reportError = (err) => console.error(err),
+}: {
+  config: AppConfig;
+  db: TagDatabase;
+  reportError?: ErrorReporter;
+}): Express {
   const app = express();
   app.disable('x-powered-by');
   if (config.trustProxy) app.set('trust proxy', config.trustProxy);
@@ -89,11 +98,11 @@ export function createApp({ config, db }: { config: AppConfig; db: TagDatabase }
   app.use((req, _res, next) => next(notFound(`Cannot ${req.method} ${req.path}`)));
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  app.use((err: Error & { type?: string }, _req: Request, res: Response, _next: NextFunction) => {
+  app.use((err: Error & { type?: string }, req: Request, res: Response, _next: NextFunction) => {
     if (err instanceof AppError) return envelope(res, err.status, err.code, err.message, err.details);
     if (err?.type === 'entity.parse.failed') return envelope(res, 400, 'INVALID_JSON', 'Request body is not valid JSON.');
     if (err?.type === 'entity.too.large') return envelope(res, 413, 'PAYLOAD_TOO_LARGE', 'Request body is too large.');
-    console.error(`[${res.locals.correlationId}]`, err);
+    reportError(err, { correlation_id: res.locals.correlationId, route: `${req.method} ${req.path}` });
     return envelope(res, 500, 'INTERNAL', 'Something went wrong on our side.');
   });
 

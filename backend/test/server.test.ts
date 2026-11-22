@@ -220,5 +220,77 @@ describe('Tush SEP-2 Federation & Tag Server (TypeScript)', () => {
     });
     assert.equal(r3.status, 409);
   });
+
+  it('ignores privileged fields sent in the request body (mass assignment)', async () => {
+    const user = Keypair.random();
+    const addr = user.publicKey();
+    const post = (body: Record<string, unknown>) =>
+      fetch(`${baseUrl}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+    const first = await post({ username: 'firsttag', address: addr, signature: signSep53(user, `register:firsttag:${addr}`) });
+    assert.equal(first.status, 201);
+
+    // Second tag tries to grab primary status, backdate itself and smuggle admin flags.
+    const second = await post({
+      username: 'secondtag',
+      address: addr,
+      signature: signSep53(user, `register:secondtag:${addr}`),
+      is_primary: 1,
+      isAdmin: true,
+      role: 'admin',
+      created_at: '2000-01-01T00:00:00.000Z',
+    });
+    assert.equal(second.status, 201);
+    const body = (await second.json()) as Record<string, unknown>;
+    assert.equal(body.is_primary, false);
+    assert.equal('role' in body || 'isAdmin' in body, false);
+
+    const row = db.findByName('secondtag');
+    assert.equal(row?.is_primary, 0);
+    assert.notEqual(row?.created_at, '2000-01-01T00:00:00.000Z');
+    assert.equal(db.findPrimaryByAddress(addr)?.username, 'firsttag');
+
+    // A signature for one address cannot register a tag for another.
+    const other = Keypair.random();
+    const hijack = await post({
+      username: 'hijack',
+      address: other.publicKey(),
+      signerAddress: addr,
+      signature: signSep53(user, `register:hijack:${other.publicKey()}`),
+    });
+    assert.equal(hijack.status, 422);
+  });
+});
+
+describe('database safety', () => {
+  it('versions the schema and writes restorable backups', async () => {
+    const { mkdtempSync, readdirSync } = await import('node:fs');
+    const { tmpdir } = await import('node:os');
+    const { join } = await import('node:path');
+    const { runBackup } = await import('../src/backup.ts');
+
+    const dir = mkdtempSync(join(tmpdir(), 'tush-backup-'));
+    const live = openDatabase(join(dir, 'live.db'));
+    const kp = Keypair.random();
+    live.register({ username: 'backedup', address: kp.publicKey(), memo_type: null, memo: null }, 3);
+
+    const backupDir = join(dir, 'backups');
+    const first = runBackup(live, backupDir, 2);
+    await new Promise((r) => setTimeout(r, 5));
+    runBackup(live, backupDir, 2);
+    await new Promise((r) => setTimeout(r, 5));
+    runBackup(live, backupDir, 2);
+    assert.equal(readdirSync(backupDir).length, 2, 'old backups are pruned');
+
+    const restored = openDatabase(join(backupDir, readdirSync(backupDir).sort().at(-1)!));
+    assert.equal(restored.findByName('backedup')?.address, kp.publicKey());
+    assert.ok(first.endsWith('.db'));
+    restored.close();
+    live.close();
+  });
 });
 

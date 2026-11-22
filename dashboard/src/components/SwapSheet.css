@@ -74,10 +74,12 @@
 
 .swap-asset-chip__icon--xlm {
   background: radial-gradient(circle at 30% 30%, #2dd4bf, #0f766e);
+  background: radial-gradient(circle at 30% 30% in oklch, #2dd4bf, #0f766e);
 }
 
 .swap-asset-chip__icon--usdc {
   background: radial-gradient(circle at 30% 30%, #4ade80, #2563eb);
+  background: radial-gradient(circle at 30% 30% in oklch, #4ade80, #2563eb);
 }
 
 .swap-asset-chip__chevron {

@@ -16,6 +16,7 @@
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   width: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
   color: var(--text);
   background: var(--ink);
   overflow-x: clip;
@@ -117,9 +118,9 @@
 .tl-hero { position: relative; min-height: 100svh; display: flex; align-items: center; overflow: hidden; isolation: isolate; }
 .tl-hero__aurora { position: absolute; inset: 0; z-index: -1; }
 .tl-hero__aurora span { position: absolute; border-radius: 50%; filter: blur(90px); opacity: .55; animation: aurora 14s ease-in-out infinite alternate; }
-.tl-hero__aurora span:nth-child(1) { width: 46vw; height: 46vw; right: -6vw; top: 4vh; background: radial-gradient(circle, rgba(155, 107, 255, .7), transparent 65%); }
-.tl-hero__aurora span:nth-child(2) { width: 30vw; height: 30vw; right: 22vw; bottom: -10vh; background: radial-gradient(circle, rgba(255, 92, 219, .55), transparent 65%); animation-delay: -4s; }
-.tl-hero__aurora span:nth-child(3) { width: 26vw; height: 26vw; left: -8vw; top: 10vh; background: radial-gradient(circle, rgba(77, 124, 255, .45), transparent 65%); animation-delay: -8s; }
+.tl-hero__aurora span:nth-child(1) { width: 46vw; height: 46vw; right: -6vw; top: 4vh; background: radial-gradient(circle, rgba(155, 107, 255, .7), transparent 65%); background: radial-gradient(circle in oklch, rgba(155, 107, 255, .7), transparent 65%); }
+.tl-hero__aurora span:nth-child(2) { width: 30vw; height: 30vw; right: 22vw; bottom: -10vh; background: radial-gradient(circle, rgba(255, 92, 219, .55), transparent 65%); background: radial-gradient(circle in oklch, rgba(255, 92, 219, .55), transparent 65%); animation-delay: -4s; }
+.tl-hero__aurora span:nth-child(3) { width: 26vw; height: 26vw; left: -8vw; top: 10vh; background: radial-gradient(circle, rgba(77, 124, 255, .45), transparent 65%); background: radial-gradient(circle in oklch, rgba(77, 124, 255, .45), transparent 65%); animation-delay: -8s; }
 @keyframes aurora { to { transform: translate(4vw, -3vh) scale(1.15); } }
 
 .tl-hero__inner {
@@ -183,6 +184,8 @@
 
 /* ---------------- Marquees ---------------- */
 .tl-marquees { position: relative; height: 230px; overflow: hidden; display: grid; place-items: center; margin: 20px 0; }
+/* Edge masks: the rotated ribbons fade into the page instead of being cut off by a hard edge. */
+.tl-marquees { -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
 .tl-marquee {
   position: absolute; left: -5%; width: 110%;
   font-size: clamp(1.6rem, 3.6vw, 2.8rem); font-weight: 800; letter-spacing: -.03em; padding: 18px 0;
@@ -220,7 +223,7 @@
 .tl-steps__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; width: 100%; }
 .tl-timeline { position: relative; display: grid; gap: 28px; margin-top: 40px; padding-left: 4px; }
 .tl-timeline__rail { position: absolute; left: 27px; top: 28px; bottom: 28px; width: 2px; background: rgba(255, 255, 255, .1); border-radius: 2px; }
-.tl-timeline__fill { position: absolute; inset: 0; background: linear-gradient(var(--lime), var(--pink), var(--blue)); transform-origin: 50% 0; border-radius: 2px; box-shadow: 0 0 18px rgba(200, 255, 77, .6); }
+.tl-timeline__fill { position: absolute; inset: 0; background: linear-gradient(var(--lime), var(--pink), var(--blue)); background: linear-gradient(in oklch, var(--lime), var(--pink), var(--blue)); transform-origin: 50% 0; border-radius: 2px; box-shadow: 0 0 18px rgba(200, 255, 77, .6); }
 .tl-timeline__node { position: relative; display: flex; align-items: center; gap: 18px; color: var(--muted); transition: color .4s ease; }
 .tl-timeline__hex {
   width: 48px; height: 54px; display: grid; place-items: center; flex-shrink: 0;
@@ -247,7 +250,8 @@
 .tl-step-card h3 { margin: 14px 0 12px; font-size: clamp(2rem, 3.6vw, 3rem); line-height: 1; letter-spacing: -.045em; }
 .tl-step-card p { margin: 0 0 28px; font-size: 1.08rem; line-height: 1.55; max-width: 440px; opacity: .85; }
 
-.tl-vis { position: relative; height: 130px; border-radius: 24px; background: rgba(7, 6, 13, .9); color: #fff; display: flex; align-items: center; justify-content: center; gap: 14px; overflow: hidden; }
+/* Nested radius: outer card is 34px with 40px padding, so inner = max(34 - 40, 12px floor). */
+.tl-vis { position: relative; height: 130px; border-radius: 12px; background: rgba(7, 6, 13, .9); color: #fff; display: flex; align-items: center; justify-content: center; gap: 14px; overflow: hidden; }
 .tl-vis--passkey span { font-weight: 700; }
 .tl-vis__print { width: 60px; height: 60px; display: grid; place-items: center; border-radius: 50%; background: var(--lime); color: var(--ink); position: relative; z-index: 1; }
 .tl-vis__print svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
@@ -276,6 +280,7 @@
 .tl-play__area::before {
   content: ""; position: absolute; inset: 0;
   background-image: linear-gradient(rgba(255, 255, 255, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .04) 1px, transparent 1px);
+  background-image: linear-gradient(in oklch, rgba(255, 255, 255, .04) 1px, transparent 1px), linear-gradient(90deg in oklch, rgba(255, 255, 255, .04) 1px, transparent 1px);
   background-size: 40px 40px; pointer-events: none;
 }
 .tl-chip-card {
@@ -318,6 +323,7 @@
 .tl-resolver__right {
   padding: 30px; border-radius: 30px; min-width: 0; display: flex; flex-direction: column; gap: 10px;
   background: linear-gradient(145deg, #2a1f4d 0%, #170f2e 55%, #0d0a18 100%);
+  background: linear-gradient(145deg in oklch, #2a1f4d 0%, #170f2e 55%, #0d0a18 100%);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12), 0 30px 80px -30px rgba(155, 107, 255, .6);
 }
 .tl-resolver__status { align-self: flex-start; font: 700 .76rem/1 var(--font-mono, monospace); letter-spacing: .06em; text-transform: uppercase; padding: 7px 12px; border-radius: 999px; background: var(--lime); color: var(--ink); }

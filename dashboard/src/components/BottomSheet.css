@@ -34,6 +34,7 @@
   max-width: 420px;
   margin: 0 auto;
   max-height: 88vh;
+  max-height: 88dvh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as StellarSdk from '@stellar/stellar-sdk';
 import toast from 'react-hot-toast';
 import { useVault, CANCELLED } from '../vaultContext';
@@ -6,6 +6,7 @@ import { useTxMotion } from '../tx/txContext';
 import { resolveRecipient, type RecipientResolution } from '../../utils/tags';
 import { parseSep7Uri, type Sep7PayRequest } from '../../utils/sep7';
 import './SendModal.css';
+import { submitSigned } from '../../utils/submit';
 
 const RESOLVE_DELAY_MS = 400;
 
@@ -25,6 +26,8 @@ export default function SendModal({
   const [sendAmount, setSendAmount] = useState(() => initialRequest?.amount || '');
   const [memo, setMemo] = useState(() => initialRequest?.memo || '');
   const [isSending, setIsSending] = useState(false);
+  // State updates are async, so a fast double tap could start two sends. A ref is synchronous.
+  const sendingRef = useRef(false);
   const tx = useTxMotion();
 
   const handleDestinationInput = (rawVal: string) => {
@@ -65,6 +68,8 @@ export default function SendModal({
   }, [input]);
 
   const executeSend = async () => {
+    if (sendingRef.current) return;
+    sendingRef.current = true;
     setIsSending(true);
     let submitted = false;
     try {
@@ -100,7 +105,7 @@ export default function SendModal({
 
       const transaction = builder.setTimeout(30).build();
       transaction.sign(sourceKeypair);
-      const response = await server.submitTransaction(transaction);
+      const response = await submitSigned(server, transaction);
 
       console.log(`Send success! Hash: ${response.hash}`);
       tx.succeed({ title: `Sent ${sendAmount} XLM`, subtitle: `to ${recipientLabel}`, hash: response.hash });
@@ -117,6 +122,7 @@ export default function SendModal({
         else toast.error(error?.message || 'Failed to send transaction.');
       }
     } finally {
+      sendingRef.current = false;
       setIsSending(false);
     }
   };

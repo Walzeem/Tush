@@ -9,6 +9,7 @@
 .tilt-card__glare {
   position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, 0.28), transparent 45%);
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%) in oklch, rgba(255, 255, 255, 0.28), transparent 45%);
   mix-blend-mode: overlay; opacity: 0; transition: opacity 0.3s ease;
 }
 .tilt-card:hover .tilt-card__glare { opacity: 1; }

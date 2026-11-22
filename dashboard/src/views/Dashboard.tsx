@@ -36,6 +36,7 @@ import { parseSep7Uri, type Sep7PayRequest } from '../utils/sep7';
 import { motion } from 'motion/react';
 import { CountUp, TiltCard } from '../motion';
 import { useTxMotion } from '../components/tx/txContext';
+import { submitSigned } from '../utils/submit';
 
 function Dashboard({
   userPublicKey,
@@ -267,7 +268,7 @@ function Dashboard({
       .build();
 
       transaction.sign(sourceKeypair);
-      const res = await server.submitTransaction(transaction);
+      const res = await submitSigned(server, transaction);
 
       txMotion.succeed({ title: 'USDC activated', subtitle: 'You can now hold and receive USDC', hash: res.hash });
       await fetchBalances();
@@ -332,7 +333,7 @@ function Dashboard({
         .setTimeout(30)
         .build();
       tx.sign(kp);
-      const res = await server.submitTransaction(tx);
+      const res = await submitSigned(server, tx);
       txMotion.succeed({ title: `${userTag} is on-chain`, subtitle: 'Your identity badge is minted', hash: res.hash });
       await fetchBalances();
     } catch (err: any) {
@@ -359,7 +360,10 @@ function Dashboard({
       submitted = true;
       const server = new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
       const account = await server.loadAccount(kp.publicKey());
-      const prevStaked = parseFloat(onChainData['tush.stake.xlm'] || '0') || 0;
+      // Read the current value from the account we just loaded, not from React state,
+      // so two quick stakes (or a stake from another device) cannot overwrite each other.
+      const rawStaked = (account as unknown as { data_attr?: Record<string, string> }).data_attr?.['tush.stake.xlm'];
+      const prevStaked = rawStaked ? parseFloat(atob(rawStaked)) || 0 : 0;
       const nextStaked = (prevStaked + amt).toFixed(2);
       const tx = new StellarSdk.TransactionBuilder(account, {
         fee: StellarSdk.BASE_FEE,
@@ -374,7 +378,7 @@ function Dashboard({
         .setTimeout(30)
         .build();
       tx.sign(kp);
-      const res = await server.submitTransaction(tx);
+      const res = await submitSigned(server, tx);
       txMotion.succeed({ title: `Staked ${amt} XLM`, subtitle: 'Earning 4.8% APY', hash: res.hash });
       setStakeAmount('');
       await fetchBalances();

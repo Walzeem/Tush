@@ -20,6 +20,7 @@
 
 .bottom-sheet-content {
   background: linear-gradient(165deg, #111827 0%, #090d1a 100%);
+  background: linear-gradient(165deg in oklch, #111827 0%, #090d1a 100%);
   border: 1px solid rgba(200, 255, 77, 0.28);
   border-top-left-radius: 28px;
   border-top-right-radius: 28px;
@@ -34,6 +35,7 @@
   width: 100%;
   max-width: 460px;
   max-height: 90vh;
+  max-height: 90dvh;
   overflow-y: auto;
   margin: 0 auto;
 }
@@ -81,6 +83,7 @@
 
 .modal-btn-primary {
   background: linear-gradient(135deg, #c8ff4d 0%, #ff5cdb 50%, #9b6bff 100%);
+  background: linear-gradient(135deg in oklch, #c8ff4d 0%, #ff5cdb 50%, #9b6bff 100%);
   color: #040711;
   border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 100px;

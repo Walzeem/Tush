@@ -120,3 +120,16 @@
   color: #fff;
   border-color: #34A853;
 }
+
+/* Blur swap: the new label blurs in instead of hard-cutting, so the
+   "Copy" -> "Copied" change reads as one continuous motion (under 300ms). */
+.copy-btn .swap-label {
+  display: inline-block;
+  animation: swap-label-in 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes swap-label-in {
+  from { opacity: 0; filter: blur(4px); transform: scale(0.92); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .copy-btn .swap-label { animation: none; }
+}

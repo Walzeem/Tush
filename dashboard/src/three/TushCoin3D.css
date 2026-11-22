@@ -15,6 +15,7 @@
   font: 800 clamp(6rem, 14vw, 10rem)/1 var(--font-display, sans-serif);
   color: var(--c-lime, #c8ff4d);
   background: radial-gradient(circle at 30% 25%, #4a2f86, #1b1033 60%, #0b0716);
+  background: radial-gradient(circle at 30% 25% in oklch, #4a2f86, #1b1033 60%, #0b0716);
   box-shadow: 0 0 0 10px rgba(255, 92, 219, 0.5), 0 40px 120px rgba(155, 107, 255, 0.45);
   animation: coinFloat 5s ease-in-out infinite alternate;
 }

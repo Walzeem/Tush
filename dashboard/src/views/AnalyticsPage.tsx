@@ -223,9 +223,19 @@ function AnalyticsPage({
     };
 
     loadMetrics();
-    const intervalId = setInterval(loadMetrics, ANALYTICS_REFRESH_MS);
+    // Each refresh pages through up to 3 x ANALYTICS_MAX_PAGES Horizon requests.
+    // Skip it while the tab is hidden so idle tabs don't burn the shared
+    // Horizon rate limit, and refresh as soon as the user comes back.
+    const intervalId = setInterval(() => {
+      if (!document.hidden) loadMetrics();
+    }, ANALYTICS_REFRESH_MS);
+    const onVisible = () => {
+      if (!document.hidden) loadMetrics();
+    };
+    document.addEventListener("visibilitychange", onVisible);
 
     return () => {
+      document.removeEventListener("visibilitychange", onVisible);
       isActive = false;
       if (currentController) {
         currentController.abort();

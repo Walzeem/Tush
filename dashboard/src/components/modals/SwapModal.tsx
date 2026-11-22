@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { useVault, CANCELLED } from '../vaultContext';
 import { useTxMotion } from '../tx/txContext';
 import './SwapModal.css';
+import { submitSigned } from '../../utils/submit';
 
 interface SwapAsset {
   code: string;
@@ -189,7 +190,7 @@ export default function SwapModal({ onSuccess }: { onSuccess?: () => void }) {
 
       const tx = builder.setTimeout(30).build();
       tx.sign(keypair);
-      const res = await server.submitTransaction(tx);
+      const res = await submitSigned(server, tx);
 
       txMotion.succeed({
         title: `Swapped ${amt} ${fromAsset.code}`,

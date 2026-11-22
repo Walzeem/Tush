@@ -112,7 +112,9 @@ export default function ReceiveModal() {
                 className={`copy-btn ${copied === 'tag' ? 'copied' : ''}`}
                 onClick={() => copy('tag', userTag, 'Tag copied!')}
               >
-                {copied === 'tag' ? 'Copied! ✓' : `Copy ${userTag}`}
+                <span className="swap-label" key={copied === 'tag' ? 'done' : 'idle'}>
+                  {copied === 'tag' ? 'Copied! ✓' : `Copy ${userTag}`}
+                </span>
               </button>
             )}
             <button
@@ -120,7 +122,9 @@ export default function ReceiveModal() {
               className={`copy-btn ${copied === 'address' ? 'copied' : ''}`}
               onClick={() => copy('address', activeAddress, 'Address copied!')}
             >
-              {copied === 'address' ? 'Copied! ✓' : 'Copy Address'}
+              <span className="swap-label" key={copied === 'address' ? 'done' : 'idle'}>
+                {copied === 'address' ? 'Copied! ✓' : 'Copy Address'}
+              </span>
             </button>
           </>
         ) : (
@@ -130,14 +134,18 @@ export default function ReceiveModal() {
               className={`copy-btn ${copied === 'link' ? 'copied' : ''}`}
               onClick={() => copy('link', shareableLink, 'Shareable payment link copied!')}
             >
-              {copied === 'link' ? 'Copied! ✓' : 'Copy Payment Link'}
+              <span className="swap-label" key={copied === 'link' ? 'done' : 'idle'}>
+                {copied === 'link' ? 'Copied! ✓' : 'Copy Payment Link'}
+              </span>
             </button>
             <button
               type="button"
               className={`copy-btn copy-btn--secondary ${copied === 'sep7' ? 'copied' : ''}`}
               onClick={() => copy('sep7', sep7Uri, 'SEP-7 URI copied!')}
             >
-              {copied === 'sep7' ? 'Copied! ✓' : 'Copy web+stellar:pay URI'}
+              <span className="swap-label" key={copied === 'sep7' ? 'done' : 'idle'}>
+                {copied === 'sep7' ? 'Copied! ✓' : 'Copy web+stellar:pay URI'}
+              </span>
             </button>
           </>
         )}

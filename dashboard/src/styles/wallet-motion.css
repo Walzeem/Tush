@@ -16,8 +16,10 @@
 .wallet-layout::before {
   content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-image: radial-gradient(in oklch, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 26px 26px;
   mask-image: radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse at 50% 0% in oklch, #000 30%, transparent 75%);
 }
 
 /* ---------- Glass surfaces ---------- */
@@ -59,6 +61,7 @@
 .balance-card--hero::before {
   content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; z-index: -1;
   background: conic-gradient(from var(--wm-angle, 0deg), #c8ff4d, #ff5cdb, #9b6bff, #4d7cff, #c8ff4d);
+  background: conic-gradient(in oklch, from var(--wm-angle, 0deg), #c8ff4d, #ff5cdb, #9b6bff, #4d7cff, #c8ff4d);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
   animation: wm-spin 6s linear infinite;
@@ -116,6 +119,7 @@
 .wallet-action-btn::after {
   content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%;
   background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  background: linear-gradient(100deg in oklch, transparent, rgba(255, 255, 255, 0.55), transparent);
   transform: skewX(-20deg); transition: left 0.7s var(--ease-out);
 }
 .wallet-action-btn:hover::after { left: 130%; }
@@ -160,7 +164,7 @@
 .asset-row:hover { transform: translateX(6px); background: rgba(255, 255, 255, 0.06); border-color: rgba(200, 255, 77, 0.3); }
 .asset-token-icon { border-radius: 16px; transition: transform 0.5s var(--ease-spring); }
 .asset-row:hover .asset-token-icon { transform: rotate(-10deg) scale(1.1); }
-.asset-token-icon--usdc { background: linear-gradient(135deg, #4d7cff, #9b6bff); }
+.asset-token-icon--usdc { background: linear-gradient(135deg, #4d7cff, #9b6bff); background: linear-gradient(135deg in oklch, #4d7cff, #9b6bff); }
 
 /* ---------- Chips / pills ---------- */
 .connect-pill, .chip--tag, .chip--claim {
@@ -190,6 +194,7 @@
 /* ---------- Bottom sheet: springier entrance ---------- */
 .bottom-sheet-content {
   background: linear-gradient(165deg, #1b1430 0%, #0e0b18 100%);
+  background: linear-gradient(165deg in oklch, #1b1430 0%, #0e0b18 100%);
   border-color: rgba(255, 255, 255, 0.1);
   transition: transform 0.5s var(--ease-spring);
 }

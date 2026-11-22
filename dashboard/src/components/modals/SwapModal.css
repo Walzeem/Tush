@@ -72,8 +72,8 @@
   height: 40px;
   border-radius: 50%;
   background: var(--bg-card, #141416);
-  border: 3px solid rgba(0, 240, 255, 0.4);
-  color: var(--accent-neon, #00f0ff);
+  border: 3px solid rgba(200, 255, 77, 0.4);
+  color: var(--accent-neon, #c8ff4d);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,15 +115,15 @@
 }
 
 .slippage-pill.active {
-  background: var(--accent-neon, #00f0ff);
+  background: var(--accent-neon, #c8ff4d);
   color: #000;
-  border-color: var(--accent-neon, #00f0ff);
+  border-color: var(--accent-neon, #c8ff4d);
   font-weight: 700;
 }
 
 .swap-route-badge {
   text-align: center;
   font-size: 0.78rem;
-  color: var(--accent-neon, #00f0ff);
+  color: var(--accent-neon, #c8ff4d);
   margin-bottom: 14px;
 }

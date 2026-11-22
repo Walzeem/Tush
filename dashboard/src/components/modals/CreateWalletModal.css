@@ -99,7 +99,7 @@
 }
 
 .saved-phrase-btn {
-  background: var(--accent-neon, #00f0ff);
+  background: var(--accent-neon, #c8ff4d);
   color: #000000;
   border: none;
   border-radius: 100px;
@@ -138,7 +138,7 @@
 }
 
 .cw-input:focus {
-  border-color: var(--accent-neon, #00f0ff);
+  border-color: var(--accent-neon, #c8ff4d);
 }
 
 .cw-textarea {

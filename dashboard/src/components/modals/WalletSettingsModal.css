@@ -48,7 +48,7 @@
 }
 
 .ws-neon {
-  color: var(--accent-neon, #00f0ff);
+  color: var(--accent-neon, #c8ff4d);
 }
 
 .ws-mono {
@@ -75,17 +75,17 @@
 }
 
 .ws-pill-primary {
-  background: var(--accent-neon, #00f0ff);
+  background: var(--accent-neon, #c8ff4d);
   color: #000;
-  border-color: var(--accent-neon, #00f0ff);
+  border-color: var(--accent-neon, #c8ff4d);
 }
 
 .ws-action-btn {
   margin-top: 12px;
   width: 100%;
-  background: rgba(0, 240, 255, 0.08);
-  border: 1px solid rgba(0, 240, 255, 0.3);
-  color: var(--accent-neon, #00f0ff);
+  background: rgba(200, 255, 77, 0.08);
+  border: 1px solid rgba(200, 255, 77, 0.3);
+  color: var(--accent-neon, #c8ff4d);
   border-radius: 100px;
   padding: 10px 14px;
   font-size: 0.85rem;

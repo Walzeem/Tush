@@ -1,9 +1,9 @@
 :root {
-  --bg-main: #050811;
-  --bg-card: rgba(15, 23, 42, 0.78);
-  --bg-card-hover: rgba(30, 41, 59, 0.88);
-  --accent-neon: #00f0ff;
-  --accent-violet: #8b5cf6;
+  --bg-main: #07060d;
+  --bg-card: rgba(22, 18, 36, 0.72);
+  --bg-card-hover: rgba(34, 28, 54, 0.85);
+  --accent-neon: #c8ff4d;
+  --accent-violet: #9b6bff;
   --text-primary: #f8fafc;
   --text-muted: #94a3b8;
   --radius-lg: 24px;
@@ -14,12 +14,25 @@
   --muted: #94a3b8;
   --cloud: #090d1a;
   --paper: rgba(15, 23, 42, 0.82);
-  --mint: #00f0ff;
-  --nova: #38bdf8;
+  --mint: #c8ff4d;
+  --nova: #ff5cdb;
   --coral: #ff6b4a;
   --sun: #fbbf24;
-  --ring: rgba(0, 240, 255, 0.28);
+  --ring: rgba(200, 255, 77, 0.28);
   --shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+
+  /* Tush candy palette */
+  --c-lime: #c8ff4d;
+  --c-pink: #ff5cdb;
+  --c-blue: #4d7cff;
+  --c-orange: #ff8a3d;
+  --c-violet: #9b6bff;
+  --c-ink: #07060d;
+  --grad-candy: linear-gradient(120deg, #ff5cdb 0%, #9b6bff 35%, #4d7cff 65%, #c8ff4d 100%);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
 }
 
 *,
@@ -38,8 +51,9 @@ body {
   font-family: "Bricolage Grotesque", "Inter", ui-sans-serif, system-ui, -apple-system,
     BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: var(--text-primary);
-  background: #050811;
+  background: #07060d;
   overflow-x: hidden;
+  font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -154,19 +168,19 @@ body::before {
 }
 
 .desktop-nav-pill.is-active {
-  background: linear-gradient(135deg, #00f0ff 0%, #38bdf8 100%);
+  background: linear-gradient(135deg, #c8ff4d 0%, #ff5cdb 100%);
   color: #040711;
-  box-shadow: 0 4px 16px rgba(0, 240, 255, 0.3);
+  box-shadow: 0 4px 16px rgba(200, 255, 77, 0.3);
 }
 
 .desktop-nav-pill--accent {
-  color: #67e8f9;
-  border: 1px solid rgba(0, 240, 255, 0.28);
+  color: #e2ff9e;
+  border: 1px solid rgba(200, 255, 77, 0.28);
 }
 
 .desktop-nav-pill--accent:hover {
-  background: rgba(0, 240, 255, 0.14);
-  color: #00f0ff;
+  background: rgba(200, 255, 77, 0.14);
+  color: #c8ff4d;
 }
 
 .topbar-actions {
@@ -205,7 +219,7 @@ body::before {
   justify-content: center;
   gap: 8px;
   border: 1px solid rgba(255, 255, 255, 0.28);
-  background: linear-gradient(135deg, #00f0ff 0%, #38bdf8 45%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #c8ff4d 0%, #ff5cdb 45%, #9b6bff 100%);
   color: #040711 !important;
   padding: 9px 18px;
   border-radius: 999px;
@@ -215,14 +229,14 @@ body::before {
   margin: 0;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 8px 24px rgba(0, 240, 255, 0.28);
+  box-shadow: 0 8px 24px rgba(200, 255, 77, 0.28);
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
 .connect-pill:hover:not(:disabled) {
   transform: translateY(-2px);
   filter: brightness(1.08);
-  box-shadow: 0 12px 30px rgba(0, 240, 255, 0.42);
+  box-shadow: 0 12px 30px rgba(200, 255, 77, 0.42);
 }
 
 .chip {
@@ -231,12 +245,12 @@ body::before {
   justify-content: center;
   gap: 6px;
   padding: 8px 14px;
-  background: rgba(0, 240, 255, 0.12);
+  background: rgba(200, 255, 77, 0.12);
   border-radius: 999px;
-  border: 1px solid rgba(0, 240, 255, 0.38);
+  border: 1px solid rgba(200, 255, 77, 0.38);
   font-size: 0.82rem;
   font-weight: 700;
-  color: #67e8f9;
+  color: #e2ff9e;
   cursor: pointer;
   width: auto;
   margin: 0;
@@ -245,15 +259,15 @@ body::before {
 }
 
 .chip:hover {
-  background: rgba(0, 240, 255, 0.22);
-  border-color: #00f0ff;
+  background: rgba(200, 255, 77, 0.22);
+  border-color: #c8ff4d;
   color: #ffffff;
   transform: translateY(-1px);
 }
 
 .chip--claim {
-  background: linear-gradient(135deg, rgba(0, 240, 255, 0.18), rgba(139, 92, 246, 0.25));
-  border-color: rgba(0, 240, 255, 0.5);
+  background: linear-gradient(135deg, rgba(200, 255, 77, 0.18), rgba(155, 107, 255, 0.25));
+  border-color: rgba(200, 255, 77, 0.5);
   color: #ffffff;
 }
 
@@ -311,15 +325,15 @@ body::before {
   position: relative;
   width: 100%;
   background:
-    radial-gradient(circle at 88% 15%, rgba(0, 240, 255, 0.18) 0%, transparent 48%),
-    radial-gradient(circle at 12% 88%, rgba(139, 92, 246, 0.2) 0%, transparent 52%),
+    radial-gradient(circle at 88% 15%, rgba(200, 255, 77, 0.18) 0%, transparent 48%),
+    radial-gradient(circle at 12% 88%, rgba(155, 107, 255, 0.2) 0%, transparent 52%),
     linear-gradient(165deg, #111827 0%, #090d1a 100%);
-  border: 1px solid rgba(0, 240, 255, 0.28);
+  border: 1px solid rgba(200, 255, 77, 0.28);
   border-radius: 28px;
   padding: 28px 26px;
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.55),
-    0 0 36px rgba(0, 240, 255, 0.1);
+    0 0 36px rgba(200, 255, 77, 0.1);
   overflow: hidden;
 }
 
@@ -332,7 +346,7 @@ body::before {
 }
 
 .balance-eyebrow {
-  color: #67e8f9;
+  color: #e2ff9e;
   font-size: 0.74rem;
   font-weight: 800;
   letter-spacing: 0.16em;
@@ -377,7 +391,7 @@ body::before {
   padding: 14px 12px;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(0, 240, 255, 0.32);
+  border: 1px solid rgba(200, 255, 77, 0.32);
   color: #ffffff;
   font-size: 0.94rem;
   font-weight: 800;
@@ -395,21 +409,21 @@ body::before {
 
 .wallet-action-btn--primary,
 .balance-actions-row button:first-child {
-  background: linear-gradient(135deg, #00f0ff 0%, #38bdf8 55%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #c8ff4d 0%, #ff5cdb 55%, #9b6bff 100%);
   color: #040711;
   border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 10px 26px rgba(0, 240, 255, 0.28);
+  box-shadow: 0 10px 26px rgba(200, 255, 77, 0.28);
 }
 
 .wallet-action-btn:hover,
 .balance-actions-row button:hover {
   transform: translateY(-3px);
-  border-color: #00f0ff;
-  box-shadow: 0 14px 30px rgba(0, 240, 255, 0.25);
+  border-color: #c8ff4d;
+  box-shadow: 0 14px 30px rgba(200, 255, 77, 0.25);
 }
 
 .wallet-action-btn:not(.wallet-action-btn--primary):hover {
-  background: rgba(0, 240, 255, 0.16);
+  background: rgba(200, 255, 77, 0.16);
 }
 
 .wallet-action-btn__icon {
@@ -435,26 +449,26 @@ body::before {
   border-radius: 16px;
   font-size: 0.9rem;
   font-weight: 700;
-  color: #67e8f9;
-  background: rgba(0, 240, 255, 0.1);
-  border: 1px solid rgba(0, 240, 255, 0.38);
+  color: #e2ff9e;
+  background: rgba(200, 255, 77, 0.1);
+  border: 1px solid rgba(200, 255, 77, 0.38);
   cursor: pointer;
   margin: 0;
   transition: all 0.22s ease;
 }
 
 .fund-wallet-btn:hover:not(:disabled) {
-  background: rgba(0, 240, 255, 0.2);
-  border-color: #00f0ff;
+  background: rgba(200, 255, 77, 0.2);
+  border-color: #c8ff4d;
   color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(0, 240, 255, 0.2);
+  box-shadow: 0 10px 24px rgba(200, 255, 77, 0.2);
 }
 
 .fund-wallet-btn--cta {
-  background: linear-gradient(135deg, rgba(0, 240, 255, 0.18), rgba(139, 92, 246, 0.28));
+  background: linear-gradient(135deg, rgba(200, 255, 77, 0.18), rgba(155, 107, 255, 0.28));
   color: #ffffff;
-  border-color: rgba(0, 240, 255, 0.5);
+  border-color: rgba(200, 255, 77, 0.5);
 }
 
 /* Assets & Portfolio Section */
@@ -496,7 +510,7 @@ body::before {
 
 .asset-row:hover {
   transform: translateY(-2px);
-  border-color: rgba(0, 240, 255, 0.32);
+  border-color: rgba(200, 255, 77, 0.32);
   background: rgba(15, 23, 42, 0.92);
 }
 
@@ -522,7 +536,7 @@ body::before {
 }
 
 .asset-token-icon--stellar {
-  background: linear-gradient(135deg, #00f0ff, #0284c7);
+  background: linear-gradient(135deg, #c8ff4d, #7dd321);
   color: #040711;
 }
 
@@ -572,7 +586,7 @@ body::before {
 
 .card:hover {
   transform: translateY(-3px);
-  border-color: rgba(0, 240, 255, 0.32);
+  border-color: rgba(200, 255, 77, 0.32);
 }
 
 .card h2 {
@@ -599,9 +613,9 @@ body::before {
   border-radius: 999px;
   font-size: 0.74rem;
   font-weight: 700;
-  background: rgba(0, 240, 255, 0.14);
-  border: 1px solid rgba(0, 240, 255, 0.3);
-  color: #67e8f9;
+  background: rgba(200, 255, 77, 0.14);
+  border: 1px solid rgba(200, 255, 77, 0.3);
+  color: #e2ff9e;
 }
 
 .metric {
@@ -621,9 +635,9 @@ body::before {
 
 /* Refresh & Privacy Toggle Buttons */
 .refresh-button {
-  border: 1px solid rgba(0, 240, 255, 0.35);
-  background: rgba(0, 240, 255, 0.12);
-  color: #00f0ff;
+  border: 1px solid rgba(200, 255, 77, 0.35);
+  background: rgba(200, 255, 77, 0.12);
+  color: #c8ff4d;
   padding: 8px 12px;
   border-radius: 999px;
   font-size: 0.78rem;
@@ -648,7 +662,7 @@ body::before {
 }
 
 .refresh-button:hover:not(:disabled) {
-  background: rgba(0, 240, 255, 0.24);
+  background: rgba(200, 255, 77, 0.24);
   transform: translateY(-1px);
 }
 
@@ -673,9 +687,9 @@ body::before {
 }
 
 .privacy-toggle:hover {
-  color: #00f0ff;
-  border-color: #00f0ff;
-  background: rgba(0, 240, 255, 0.12);
+  color: #c8ff4d;
+  border-color: #c8ff4d;
+  background: rgba(200, 255, 77, 0.12);
 }
 
 .privacy-toggle svg {
@@ -702,10 +716,10 @@ body::before {
   background: rgba(9, 14, 28, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 240, 255, 0.25);
+  border: 1px solid rgba(200, 255, 77, 0.25);
   box-shadow:
     0 20px 50px rgba(0, 0, 0, 0.65),
-    0 0 24px rgba(0, 240, 255, 0.12);
+    0 0 24px rgba(200, 255, 77, 0.12);
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
@@ -749,9 +763,9 @@ body::before {
 }
 
 .mobile-nav button.is-active {
-  color: #00f0ff;
-  background: rgba(0, 240, 255, 0.12);
-  box-shadow: inset 0 0 0 1px rgba(0, 240, 255, 0.28);
+  color: #c8ff4d;
+  background: rgba(200, 255, 77, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(200, 255, 77, 0.28);
 }
 
 /* Help Center Styles */
@@ -760,7 +774,7 @@ body::before {
 }
 
 .help-eyebrow {
-  color: #00f0ff;
+  color: #c8ff4d;
   font-size: 0.76rem;
   font-weight: 800;
   letter-spacing: 0.16em;
@@ -780,7 +794,7 @@ body::before {
   padding: 14px 18px;
   border-radius: 16px;
   background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(0, 240, 255, 0.32);
+  border: 1px solid rgba(200, 255, 77, 0.32);
   color: #ffffff;
   font-size: 0.96rem;
   outline: none;
@@ -809,7 +823,7 @@ body::before {
 
 .help-actions button:hover,
 .help-actions button.is-active {
-  background: linear-gradient(135deg, #00f0ff, #38bdf8);
+  background: linear-gradient(135deg, #c8ff4d, #ff5cdb);
   color: #040711;
   border-color: transparent;
 }
@@ -878,14 +892,14 @@ body::before {
   padding: 13px 16px;
   border-radius: 14px;
   background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(0, 240, 255, 0.32);
+  border: 1px solid rgba(200, 255, 77, 0.32);
   color: #ffffff;
   font-size: 0.96rem;
   outline: none;
 }
 
 .primary-button {
-  background: linear-gradient(135deg, #00f0ff 0%, #38bdf8 50%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #c8ff4d 0%, #ff5cdb 50%, #9b6bff 100%);
   color: #040711;
   border: none;
   border-radius: 999px;
@@ -894,7 +908,7 @@ body::before {
   font-weight: 800;
   cursor: pointer;
   width: 100%;
-  box-shadow: 0 10px 28px rgba(0, 240, 255, 0.28);
+  box-shadow: 0 10px 28px rgba(200, 255, 77, 0.28);
   transition: transform 0.2s ease, filter 0.2s ease;
 }
 
@@ -904,9 +918,9 @@ body::before {
 }
 
 .ghost-button {
-  border: 1px solid rgba(0, 240, 255, 0.4);
-  background: rgba(0, 240, 255, 0.1);
-  color: #67e8f9;
+  border: 1px solid rgba(200, 255, 77, 0.4);
+  background: rgba(200, 255, 77, 0.1);
+  color: #e2ff9e;
   padding: 10px 18px;
   border-radius: 999px;
   font-size: 0.86rem;
@@ -917,7 +931,7 @@ body::before {
 }
 
 .ghost-button:hover:not(:disabled) {
-  background: rgba(0, 240, 255, 0.2);
+  background: rgba(200, 255, 77, 0.2);
   color: #ffffff;
   transform: translateY(-1px);
 }
@@ -936,9 +950,9 @@ body::before {
   font-weight: 700;
   padding: 5px 12px;
   border-radius: 999px;
-  background: rgba(0, 240, 255, 0.12);
-  border: 1px solid rgba(0, 240, 255, 0.28);
-  color: #67e8f9;
+  background: rgba(200, 255, 77, 0.12);
+  border: 1px solid rgba(200, 255, 77, 0.28);
+  color: #e2ff9e;
 }
 
 .route-fallback {
@@ -1042,9 +1056,9 @@ body::before {
   white-space: nowrap;
   cursor: pointer;
   color: #040711;
-  background: linear-gradient(135deg, #00f0ff 0%, #38bdf8 55%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #c8ff4d 0%, #ff5cdb 55%, #9b6bff 100%);
   border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 6px 18px rgba(0, 240, 255, 0.25);
+  box-shadow: 0 6px 18px rgba(200, 255, 77, 0.25);
   transition: transform 0.2s ease, filter 0.2s ease;
 }
 .landing-link-pill:hover {

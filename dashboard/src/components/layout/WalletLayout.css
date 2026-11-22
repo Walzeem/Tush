@@ -7,12 +7,13 @@
   margin: 0 auto;
   box-sizing: border-box;
   background:
-    radial-gradient(circle at 15% 10%, rgba(0, 240, 255, 0.11) 0%, transparent 40%),
-    radial-gradient(circle at 85% 18%, rgba(124, 58, 237, 0.13) 0%, transparent 45%),
-    radial-gradient(circle at 50% 90%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
-    #050811;
+    radial-gradient(circle at 15% 10%, rgba(200, 255, 77, 0.11) 0%, transparent 40%),
+    radial-gradient(circle at 85% 18%, rgba(155, 107, 255, 0.13) 0%, transparent 45%),
+    radial-gradient(circle at 50% 90%, rgba(255, 92, 219, 0.08) 0%, transparent 50%),
+    #07060d;
   color: var(--text-primary, #f8fafc);
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 html.tush-extension-popup,

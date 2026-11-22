@@ -27,14 +27,14 @@
 }
 
 .pill-testnet {
-  background: rgba(0, 240, 255, 0.1);
-  color: var(--accent-neon, #00f0ff);
+  background: rgba(200, 255, 77, 0.1);
+  color: var(--accent-neon, #c8ff4d);
   padding: 4px 8px;
   border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  border: 1px solid rgba(200, 255, 77, 0.2);
 }
 
 .pill-tag {

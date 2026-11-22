@@ -1,0 +1,48 @@
+/* ---------- SplitText ---------- */
+.split-text { display: inline; }
+.split-text__word { display: inline-block; white-space: nowrap; }
+.split-text__mask { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.split-text__char { display: inline-block; transform-origin: 0 100%; will-change: transform; }
+
+/* ---------- TiltCard ---------- */
+.tilt-card { position: relative; transform-style: preserve-3d; will-change: transform; }
+.tilt-card__glare {
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, 0.28), transparent 45%);
+  mix-blend-mode: overlay; opacity: 0; transition: opacity 0.3s ease;
+}
+.tilt-card:hover .tilt-card__glare { opacity: 1; }
+
+/* ---------- Magnetic ---------- */
+.magnetic { display: inline-flex; will-change: transform; }
+
+/* ---------- Cursor ---------- */
+html.has-custom-cursor, html.has-custom-cursor * { cursor: none !important; }
+html.has-custom-cursor input, html.has-custom-cursor textarea { cursor: text !important; }
+.cursor-dot, .cursor-ring {
+  position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; border-radius: 50%;
+}
+.cursor-dot { width: 8px; height: 8px; margin: -4px 0 0 -4px; background: var(--c-lime, #c8ff4d); }
+.cursor-ring {
+  width: 38px; height: 38px; margin: -19px 0 0 -19px;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  transition: width .3s var(--ease-out), height .3s var(--ease-out), margin .3s var(--ease-out),
+    background .3s ease, border-color .3s ease;
+  mix-blend-mode: difference;
+}
+.cursor-ring.is-hover {
+  width: 64px; height: 64px; margin: -32px 0 0 -32px;
+  background: rgba(255, 255, 255, 0.95); border-color: transparent;
+}
+.cursor-ring.is-down { width: 26px; height: 26px; margin: -13px 0 0 -13px; }
+
+/* ---------- Marquee ---------- */
+.marquee { overflow: hidden; width: 100%; }
+.marquee__track { display: flex; width: max-content; animation: marquee 30s linear infinite; }
+.marquee__track--reverse { animation-direction: reverse; }
+.marquee__item { flex-shrink: 0; display: inline-flex; align-items: center; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation-duration: 200s !important; }
+}

@@ -33,6 +33,8 @@ import TushLogo from '../components/TushLogo';
 import { useVault, CANCELLED } from '../components/vaultContext';
 import { getCachedTag, setCachedTag, syncTag } from '../utils/tags';
 import { parseSep7Uri, type Sep7PayRequest } from '../utils/sep7';
+import { motion } from 'motion/react';
+import { CountUp, TiltCard } from '../motion';
 
 function Dashboard({
   userPublicKey,
@@ -847,7 +849,8 @@ function Dashboard({
 
         <section className="grid columns-1 balance-grid">
           <div className="reveal balance-hero">
-            <div className="balance-card balance-card--hero">
+            <TiltCard className="balance-card balance-card--hero" max={5}>
+              <span className="balance-orbs" aria-hidden="true"><i /><i /><i /></span>
               <div className="balance-card__header">
                 <span className="balance-eyebrow">TOTAL BALANCE</span>
                 <button
@@ -868,7 +871,9 @@ function Dashboard({
               )}
               <div className="balance-hero-value">
                 <span className="balance-hero-amount">
-                  {showBalance ? `$${xlmBalance}` : '$***'}
+                  {showBalance && Number.isFinite(parseFloat(String(xlmBalance).replace(/,/g, ''))) ? (
+                    <CountUp value={parseFloat(String(xlmBalance).replace(/,/g, ''))} prefix="$" />
+                  ) : showBalance ? `$${xlmBalance}` : '$***'}
                 </span>
                 <span className="balance-hero-subvalue">≈ {xlmBalance} XLM</span>
                 <button
@@ -897,7 +902,7 @@ function Dashboard({
                 </button>
                 <button
                   type="button"
-                  className="wallet-action-btn"
+                  className="wallet-action-btn wallet-action-btn--pink"
                   onClick={() => handleBalanceAction('receive')}
                 >
                   <span className="wallet-action-btn__icon" aria-hidden="true">↙</span>
@@ -905,7 +910,7 @@ function Dashboard({
                 </button>
                 <button
                   type="button"
-                  className="wallet-action-btn"
+                  className="wallet-action-btn wallet-action-btn--blue"
                   onClick={() => handleBalanceAction('swap')}
                 >
                   <span className="wallet-action-btn__icon" aria-hidden="true">⇄</span>
@@ -932,7 +937,7 @@ function Dashboard({
                   </button>
                 )}
               </div>
-            </div>
+            </TiltCard>
 
             <div className="assets-section">
               <div
@@ -948,15 +953,7 @@ function Dashboard({
                 <div className="assets-section__title" style={{ marginBottom: 0 }}>
                   Portfolio
                 </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: '6px',
-                    background: 'rgba(255,255,255,0.05)',
-                    padding: '4px',
-                    borderRadius: '100px',
-                  }}
-                >
+                <div className="portfolio-tabs" role="tablist">
                   {(
                     [
                       ['tokens', 'Tokens'],
@@ -967,19 +964,19 @@ function Dashboard({
                     <button
                       key={id}
                       type="button"
+                      role="tab"
+                      aria-selected={portfolioTab === id}
+                      className={`portfolio-tab${portfolioTab === id ? ' is-active' : ''}`}
                       onClick={() => setPortfolioTab(id)}
-                      style={{
-                        background: portfolioTab === id ? 'var(--accent-neon, #00f0ff)' : 'transparent',
-                        color: portfolioTab === id ? '#000' : '#9ca3af',
-                        border: 'none',
-                        borderRadius: '100px',
-                        padding: '6px 14px',
-                        fontSize: '0.8rem',
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                      }}
                     >
-                      {label}
+                      {portfolioTab === id && (
+                        <motion.span
+                          layoutId="portfolio-tab-pill"
+                          className="portfolio-tab__pill"
+                          transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                        />
+                      )}
+                      <span className="portfolio-tab__label">{label}</span>
                     </button>
                   ))}
                 </div>
@@ -1009,8 +1006,8 @@ function Dashboard({
                             disabled={isActivatingUSDC}
                             style={{
                               background: 'transparent',
-                              border: '1px solid var(--accent-neon, #00f0ff)',
-                              color: 'var(--accent-neon, #00f0ff)',
+                              border: '1px solid var(--accent-neon, #c8ff4d)',
+                              color: 'var(--accent-neon, #c8ff4d)',
                               padding: '6px 12px',
                               borderRadius: '100px',
                               fontSize: '0.75rem',
@@ -1048,7 +1045,7 @@ function Dashboard({
                     </div>
                     <div className="asset-row__right">
                       {onChainData['tush.identity.tag'] ? (
-                        <span style={{ color: 'var(--accent-neon, #00f0ff)', fontWeight: 700, fontSize: '0.85rem' }}>
+                        <span style={{ color: 'var(--accent-neon, #c8ff4d)', fontWeight: 700, fontSize: '0.85rem' }}>
                           ✓ Minted
                         </span>
                       ) : (
@@ -1057,7 +1054,7 @@ function Dashboard({
                           onClick={mintTagBadgeOnChain}
                           disabled={isMintingBadge || !activeWallet}
                           style={{
-                            background: 'var(--accent-neon, #00f0ff)',
+                            background: 'var(--accent-neon, #c8ff4d)',
                             color: '#000',
                             border: 'none',
                             padding: '8px 14px',
@@ -1109,7 +1106,7 @@ function Dashboard({
                           onClick={handleStakeXlm}
                           disabled={isStaking || !stakeAmount}
                           style={{
-                            background: 'var(--accent-neon, #00f0ff)',
+                            background: 'var(--accent-neon, #c8ff4d)',
                             color: '#000',
                             border: 'none',
                             borderRadius: '100px',

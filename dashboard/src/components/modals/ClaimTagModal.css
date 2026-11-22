@@ -23,7 +23,7 @@
   display: flex;
   align-items: center;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(0, 240, 255, 0.3);
+  border: 1px solid rgba(200, 255, 77, 0.3);
   border-radius: 12px;
   padding: 12px 16px;
   margin-bottom: 16px;
@@ -31,11 +31,11 @@
 }
 
 .tag-input-wrapper:focus-within {
-  border-color: var(--accent-neon, #00f0ff);
+  border-color: var(--accent-neon, #c8ff4d);
 }
 
 .tag-prefix {
-  color: var(--accent-neon, #00f0ff);
+  color: var(--accent-neon, #c8ff4d);
   font-size: 1.25rem;
   font-weight: 700;
   margin-right: 4px;
@@ -64,7 +64,7 @@
 }
 
 .claim-submit-btn {
-  background: var(--accent-neon, #00f0ff);
+  background: var(--accent-neon, #c8ff4d);
   color: #000;
   border: none;
   border-radius: 100px;

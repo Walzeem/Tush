@@ -19,7 +19,7 @@
   padding: 24px;
   border-radius: 20px;
   background: #14161c;
-  border: 1px solid rgba(0, 240, 255, 0.25);
+  border: 1px solid rgba(200, 255, 77, 0.25);
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.75);
   color: #fff;
 }
@@ -36,7 +36,7 @@
   font-size: 1rem;
   outline: none;
 }
-.vault-dialog input:focus { border-color: var(--accent-neon, #00f0ff); }
+.vault-dialog input:focus { border-color: var(--accent-neon, #c8ff4d); }
 
 .vault-error { color: #ea4335; font-size: 0.85rem; }
 
@@ -49,7 +49,7 @@
   cursor: pointer;
   border: none;
 }
-.vault-primary { background: var(--accent-neon, #00f0ff); color: #000; }
+.vault-primary { background: var(--accent-neon, #c8ff4d); color: #000; }
 .vault-secondary { background: transparent; color: #9ca3af; font-weight: 600; }
 .vault-primary:disabled, .vault-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -57,9 +57,9 @@
   align-self: flex-start;
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(0, 240, 255, 0.14);
-  border: 1px solid rgba(0, 240, 255, 0.35);
-  color: #00f0ff;
+  background: rgba(200, 255, 77, 0.14);
+  border: 1px solid rgba(200, 255, 77, 0.35);
+  color: #c8ff4d;
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -81,7 +81,7 @@
 }
 
 .vault-dapp-origin span {
-  color: #38bdf8;
+  color: #ff5cdb;
   font-size: 0.78rem;
   word-break: break-all;
 }

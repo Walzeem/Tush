@@ -38,8 +38,8 @@
 
 .send-destination:focus {
   outline: none;
-  border-color: var(--accent-neon, #00f0ff);
-  box-shadow: 0 0 0 3px var(--ring, rgba(0, 240, 255, 0.2));
+  border-color: var(--accent-neon, #c8ff4d);
+  box-shadow: 0 0 0 3px var(--ring, rgba(200, 255, 77, 0.2));
 }
 
 /* Amount readout driven by the keypad below. */
@@ -105,7 +105,7 @@
 
 .send-keypad button:focus-visible {
   outline: none;
-  border-color: var(--accent-neon, #00f0ff);
+  border-color: var(--accent-neon, #c8ff4d);
 }
 
 .send-keypad__key--action {

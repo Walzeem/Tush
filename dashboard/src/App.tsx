@@ -100,7 +100,7 @@ function App() {
               fontWeight: 600,
               background: '#0f172a',
               color: '#f8fafc',
-              border: '1px solid rgba(0, 240, 255, 0.3)',
+              border: '1px solid rgba(200, 255, 77, 0.3)',
             },
           }}
         />

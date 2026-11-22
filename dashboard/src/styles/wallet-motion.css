@@ -1,0 +1,215 @@
+/* =====================================================================
+   Wallet motion layer — candy palette, depth and micro-interactions
+   for the in-app screens (dashboard, history, apps, help, modals).
+   Loaded after index.css / App.css so it refines without rewriting.
+   ===================================================================== */
+
+/* ---------- Ambient background ---------- */
+.wallet-layout {
+  background:
+    radial-gradient(60vw 60vw at 110% -10%, rgba(155, 107, 255, 0.22), transparent 60%),
+    radial-gradient(50vw 50vw at -10% 20%, rgba(77, 124, 255, 0.14), transparent 60%),
+    radial-gradient(40vw 40vw at 50% 110%, rgba(255, 92, 219, 0.12), transparent 60%),
+    var(--c-ink, #07060d);
+  font-family: var(--font-display);
+}
+.wallet-layout::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%);
+}
+
+/* ---------- Glass surfaces ---------- */
+.topbar {
+  background: rgba(17, 14, 28, 0.62);
+  border-color: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 10px 12px 10px 18px;
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  animation: wm-drop 0.7s var(--ease-out) backwards;
+}
+.assets-section,
+.card,
+.history-card,
+.sidebar-card {
+  background: rgba(20, 16, 33, 0.72);
+  border-color: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.assets-section {
+  border-radius: 28px;
+  animation: wm-rise 0.8s var(--ease-out) 0.15s backwards;
+}
+
+/* ---------- Balance hero card ---------- */
+.balance-card--hero {
+  isolation: isolate;
+  border: none;
+  border-radius: 32px;
+  padding: 30px 28px;
+  background:
+    linear-gradient(150deg, rgba(39, 27, 78, 0.92) 0%, rgba(20, 14, 40, 0.95) 55%, rgba(12, 9, 22, 0.98) 100%);
+  box-shadow: 0 40px 90px -30px rgba(155, 107, 255, 0.55), 0 20px 50px rgba(0, 0, 0, 0.5);
+  animation: wm-rise 0.8s var(--ease-out) backwards;
+}
+/* animated candy border */
+.balance-card--hero::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; z-index: -1;
+  background: conic-gradient(from var(--wm-angle, 0deg), #c8ff4d, #ff5cdb, #9b6bff, #4d7cff, #c8ff4d);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: wm-spin 6s linear infinite;
+}
+@property --wm-angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+@keyframes wm-spin { to { --wm-angle: 360deg; } }
+
+.balance-orbs { position: absolute; inset: 0; z-index: -1; overflow: hidden; border-radius: inherit; pointer-events: none; }
+.balance-orbs i { position: absolute; border-radius: 50%; filter: blur(40px); opacity: 0.7; animation: wm-orb 9s ease-in-out infinite alternate; }
+.balance-orbs i:nth-child(1) { width: 220px; height: 220px; right: -60px; top: -80px; background: rgba(200, 255, 77, 0.35); }
+.balance-orbs i:nth-child(2) { width: 260px; height: 260px; left: -90px; bottom: -120px; background: rgba(255, 92, 219, 0.35); animation-delay: -3s; }
+.balance-orbs i:nth-child(3) { width: 160px; height: 160px; left: 45%; top: 30%; background: rgba(77, 124, 255, 0.3); animation-delay: -6s; }
+@keyframes wm-orb { to { transform: translate(30px, 20px) scale(1.2); } }
+
+.balance-eyebrow { color: var(--c-lime); font-family: var(--font-mono); letter-spacing: 0.14em; }
+.balance-hero-amount {
+  font-size: clamp(2.8rem, 7vw, 4.2rem);
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+  font-variation-settings: "opsz" 96;
+}
+.balance-hero-subvalue { background: rgba(255, 255, 255, 0.08); color: #e6e1f5; }
+
+/* ---------- Action buttons (Send / Receive / Swap) ---------- */
+.wallet-action-btn,
+.balance-actions-row button {
+  position: relative; overflow: hidden;
+  min-height: 58px; border: none; border-radius: 20px;
+  font-weight: 700; letter-spacing: -0.01em;
+  background: var(--c-lime); color: var(--c-ink) !important;
+  box-shadow: 0 14px 34px -14px rgba(200, 255, 77, 0.8);
+  transition: transform 0.45s var(--ease-spring), box-shadow 0.3s ease, filter 0.3s ease;
+}
+.balance-actions-row .wallet-action-btn.wallet-action-btn--primary,
+.balance-actions-row .wallet-action-btn.wallet-action-btn--primary:hover { background: var(--c-lime); border-color: transparent; }
+.balance-actions-row .wallet-action-btn--pink,
+.balance-actions-row .wallet-action-btn--pink:hover { background: var(--c-pink); box-shadow: 0 14px 34px -14px rgba(255, 92, 219, 0.8); }
+.balance-actions-row .wallet-action-btn--blue,
+.balance-actions-row .wallet-action-btn--blue:hover { background: var(--c-blue); color: #fff !important; box-shadow: 0 14px 34px -14px rgba(77, 124, 255, 0.85); }
+.wallet-action-btn:hover,
+.balance-actions-row button:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: transparent;
+  filter: brightness(1.06);
+}
+.wallet-action-btn:active { transform: scale(0.94); transition-duration: 0.12s; }
+.wallet-action-btn__icon {
+  width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+  background: rgba(7, 6, 13, 0.9); color: #fff; font-size: 0.95rem;
+  transition: transform 0.5s var(--ease-spring);
+}
+.wallet-action-btn--blue .wallet-action-btn__icon { background: #fff; color: var(--c-blue); }
+.wallet-action-btn:hover .wallet-action-btn__icon { transform: rotate(-20deg) scale(1.12); }
+/* shine sweep */
+.wallet-action-btn::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-20deg); transition: left 0.7s var(--ease-out);
+}
+.wallet-action-btn:hover::after { left: 130%; }
+
+.fund-wallet-btn {
+  border-radius: 999px; border-style: dashed; border-color: rgba(200, 255, 77, 0.45);
+  background: rgba(200, 255, 77, 0.06);
+  transition: transform 0.4s var(--ease-spring), background 0.25s ease, border-color 0.25s ease;
+}
+.fund-wallet-btn:hover:not(:disabled) { border-style: solid; transform: translateY(-2px) scale(1.01); }
+.fund-wallet-btn:active:not(:disabled) { transform: scale(0.97); }
+
+/* ---------- Portfolio tabs (sliding pill) ---------- */
+.portfolio-tabs {
+  display: flex; gap: 4px; padding: 4px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+.portfolio-tab {
+  position: relative; isolation: isolate; margin: 0; width: auto;
+  border: none; background: transparent; cursor: pointer;
+  padding: 8px 14px; border-radius: 999px;
+  color: #a49fb8; font: 700 0.8rem/1 var(--font-display);
+  transition: color 0.25s ease;
+}
+.portfolio-tab:hover { color: #fff; background: transparent; transform: none; box-shadow: none; }
+.portfolio-tab.is-active { color: var(--c-ink); }
+.portfolio-tab__pill { position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--c-lime); box-shadow: 0 6px 18px -6px rgba(200, 255, 77, 0.8); }
+.portfolio-tab__label { position: relative; white-space: nowrap; }
+
+/* ---------- Asset rows ---------- */
+.asset-row {
+  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  animation: wm-rise 0.6s var(--ease-out) backwards;
+  transition: transform 0.4s var(--ease-spring), border-color 0.25s ease, background 0.25s ease;
+}
+.assets-list .asset-row:nth-child(1) { animation-delay: 0.25s; }
+.assets-list .asset-row:nth-child(2) { animation-delay: 0.33s; }
+.assets-list .asset-row:nth-child(3) { animation-delay: 0.41s; }
+.assets-list .asset-row:nth-child(4) { animation-delay: 0.49s; }
+.asset-row:hover { transform: translateX(6px); background: rgba(255, 255, 255, 0.06); border-color: rgba(200, 255, 77, 0.3); }
+.asset-token-icon { border-radius: 16px; transition: transform 0.5s var(--ease-spring); }
+.asset-row:hover .asset-token-icon { transform: rotate(-10deg) scale(1.1); }
+.asset-token-icon--usdc { background: linear-gradient(135deg, #4d7cff, #9b6bff); }
+
+/* ---------- Chips / pills ---------- */
+.connect-pill, .chip--tag, .chip--claim {
+  transition: transform 0.4s var(--ease-spring), box-shadow 0.25s ease;
+}
+.connect-pill:hover, .chip--tag:hover, .chip--claim:hover { transform: translateY(-2px) scale(1.03); }
+.connect-pill:active, .chip:active { transform: scale(0.95); }
+
+/* ---------- Bottom dock ---------- */
+.mobile-nav {
+  border-radius: 999px;
+  padding: 8px;
+  background: rgba(17, 14, 28, 0.78);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 60px -10px rgba(0, 0, 0, 0.75);
+  animation: wm-dock 0.8s var(--ease-out) 0.3s backwards;
+}
+.mobile-nav button { border-radius: 999px; transition: color 0.25s ease, background 0.3s ease, transform 0.45s var(--ease-spring); }
+.mobile-nav button:active { transform: scale(0.9); }
+.mobile-nav button.is-active {
+  color: var(--c-ink);
+  background: var(--c-lime);
+  box-shadow: 0 8px 22px -8px rgba(200, 255, 77, 0.9);
+}
+.mobile-nav button.is-active svg { animation: wm-pop 0.5s var(--ease-spring); }
+
+/* ---------- Bottom sheet: springier entrance ---------- */
+.bottom-sheet-content {
+  background: linear-gradient(165deg, #1b1430 0%, #0e0b18 100%);
+  border-color: rgba(255, 255, 255, 0.1);
+  transition: transform 0.5s var(--ease-spring);
+}
+@media (min-width: 640px) {
+  .bottom-sheet-content { transition: transform 0.5s var(--ease-spring), opacity 0.25s ease; border-radius: 32px; }
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes wm-rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@keyframes wm-drop { from { opacity: 0; transform: translateY(-24px); } to { opacity: 1; transform: none; } }
+@keyframes wm-dock { from { opacity: 0; transform: translate(-50%, 40px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes wm-pop { 0% { transform: scale(0.6); } 60% { transform: scale(1.25); } 100% { transform: scale(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .topbar, .assets-section, .balance-card--hero, .asset-row, .mobile-nav,
+  .balance-orbs i, .balance-card--hero::before, .mobile-nav button.is-active svg { animation: none !important; }
+}
+
+/* Narrow screens / extension popup: the topbar wraps, so a pill radius would balloon */
+@media (max-width: 560px) {
+  .topbar { border-radius: 24px; padding: 12px 14px; }
+}
+html.tush-extension-popup .topbar { border-radius: 22px; }

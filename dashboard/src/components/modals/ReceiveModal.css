@@ -30,7 +30,7 @@
 }
 
 .receive-tab.active {
-  background: var(--accent-neon, #00f0ff);
+  background: var(--accent-neon, #c8ff4d);
   color: #000;
 }
 
@@ -47,7 +47,7 @@
 .receive-tag {
   font-size: 1.75rem;
   font-weight: 800;
-  color: var(--accent-neon, #00f0ff);
+  color: var(--accent-neon, #c8ff4d);
   margin-bottom: 6px;
 }
 
@@ -82,7 +82,7 @@
 }
 
 .sep7-input:focus {
-  border-color: var(--accent-neon, #00f0ff);
+  border-color: var(--accent-neon, #c8ff4d);
 }
 
 .receive-actions {
@@ -95,8 +95,8 @@
 
 .copy-btn {
   background: transparent;
-  color: var(--accent-neon, #00f0ff);
-  border: 1px solid var(--accent-neon, #00f0ff);
+  color: var(--accent-neon, #c8ff4d);
+  border: 1px solid var(--accent-neon, #c8ff4d);
   border-radius: 100px;
   padding: 14px;
   font-size: 0.95rem;
@@ -112,7 +112,7 @@
 }
 
 .copy-btn:hover {
-  background: rgba(0, 240, 255, 0.1);
+  background: rgba(200, 255, 77, 0.1);
 }
 
 .copy-btn.copied {

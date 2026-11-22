@@ -134,7 +134,7 @@ export default function SendModal({
       >
         {isResolving && <span style={{ color: '#888' }}>Resolving…</span>}
         {!isResolving && recipient?.address && (
-          <span style={{ color: 'var(--accent-neon, #00f0ff)' }}>
+          <span style={{ color: 'var(--accent-neon, #c8ff4d)' }}>
             ✓ {recipient.tag ? `${recipient.tag} · ` : ''}
             {shortAddress(recipient.address)}
           </span>

@@ -33,14 +33,14 @@ type RevealProps = HTMLMotionProps<'div'> & {
   once?: boolean;
 };
 
-export function Reveal({ delay = 0, y = 36, once = true, children, ...rest }: RevealProps) {
+export function Reveal({ delay = 0, y = 16, once = true, children, ...rest }: RevealProps) {
   const reduce = useReducedMotion();
   return (
     <motion.div
-      initial={reduce ? false : { opacity: 0, y, filter: 'blur(8px)' }}
+      initial={reduce ? false : { opacity: 0, y, filter: 'blur(4px)' }}
       whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
       viewport={{ once, amount: 0.25 }}
-      transition={{ duration: 0.9, delay, ease: EASE_OUT }}
+      transition={{ duration: 0.4, delay, ease: EASE_OUT }}
       {...rest}
     >
       {children}

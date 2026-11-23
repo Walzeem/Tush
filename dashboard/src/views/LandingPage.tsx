@@ -9,10 +9,8 @@ import {
   useSpring,
   useTransform,
 } from 'motion/react';
-import Lenis from 'lenis';
-import 'lenis/dist/lenis.css';
 import TushLogo from '../components/TushLogo';
-import { CursorFollower, Magnetic, Marquee, Reveal, SplitText, TiltCard } from '../motion';
+import { Magnetic, Marquee, Reveal, TiltCard } from '../motion';
 import './LandingPage.css';
 
 const TushCoin3D = lazy(() => import('../three/TushCoin3D'));
@@ -138,25 +136,39 @@ function WordSwap() {
   const reduce = useReducedMotion();
   useEffect(() => {
     if (reduce) return;
-    const id = window.setInterval(() => setI((v) => (v + 1) % SWAP_WORDS.length), 2200);
-    return () => window.clearInterval(id);
+    // First word holds for a full read before the first swap.
+    let id = 0;
+    const start = window.setTimeout(() => {
+      setI((v) => (v + 1) % SWAP_WORDS.length);
+      id = window.setInterval(() => setI((v) => (v + 1) % SWAP_WORDS.length), 2600);
+    }, 3000);
+    return () => {
+      window.clearTimeout(start);
+      window.clearInterval(id);
+    };
   }, [reduce]);
   const w = SWAP_WORDS[i];
   return (
-    <span className={`tl-swap tl-swap--${w.color}`}>
+    <motion.span
+      layout
+      transition={{ layout: { duration: 0.32, ease: [0.16, 1, 0.3, 1] } }}
+      className={`tl-swap tl-swap--${w.color}`}
+    >
+      {/* Blur swap: the outgoing word blurs out while the new one blurs in on top,
+          and the pill resizes with them, so there is never an empty box. */}
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span
           key={w.word}
           className="tl-swap__word"
-          initial={{ y: '100%', rotateX: -80, opacity: 0 }}
-          animate={{ y: '0%', rotateX: 0, opacity: 1 }}
-          exit={{ y: '-100%', rotateX: 80, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+          initial={{ y: '35%', opacity: 0, filter: 'blur(6px)' }}
+          animate={{ y: '0%', opacity: 1, filter: 'blur(0px)' }}
+          exit={{ y: '-35%', opacity: 0, filter: 'blur(6px)' }}
+          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
         >
           {w.word}
         </motion.span>
       </AnimatePresence>
-    </span>
+    </motion.span>
   );
 }
 
@@ -336,7 +348,6 @@ export default function LandingPage({
   const [copied, setCopied] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const finalRef = useRef<HTMLElement>(null);
-  const lenisRef = useRef<Lenis | null>(null);
   const reduce = useReducedMotion();
 
   const key = query.trim().replace(/^@/, '').toLowerCase();
@@ -351,34 +362,12 @@ export default function LandingPage({
 
   const launch = hasActiveWallet ? onLaunchDashboard : onCreateWallet;
 
-  // Smooth scrolling (landing only — wallet views keep native scroll)
-  useEffect(() => {
-    if (reduce) return;
-    const lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
-    lenisRef.current = lenis;
-    let raf = 0;
-    const tick = (time: number) => {
-      lenis.raf(time);
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(raf);
-      lenis.destroy();
-      lenisRef.current = null;
-    };
-  }, [reduce]);
-
+  // Native scrolling: no scroll-jacking library, so the page responds to the
+  // wheel/trackpad exactly like every other site.
   const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (lenisRef.current) lenisRef.current.scrollTo(el, { offset: -80 });
-    else el.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById(id)?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
   };
-  const toTop = () => {
-    if (lenisRef.current) lenisRef.current.scrollTo(0);
-    else window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const toTop = () => window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
 
   // Scroll-linked values
   const { scrollYProgress } = useScroll();
@@ -395,18 +384,12 @@ export default function LandingPage({
 
   return (
     <div className="tl">
-      <CursorFollower />
       <motion.div className="tl-progress" style={{ scaleX: progressBar }} aria-hidden="true" />
       <div className="tl-grain" aria-hidden="true" />
 
       {/* Floating pill nav */}
       <header className="tl-nav">
-        <motion.div
-          className="tl-nav__inner"
-          initial={reduce ? false : { y: -80, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-        >
+        <div className="tl-nav__inner">
           <TushLogo size="md" onClick={toTop} />
           <nav className="tl-nav__links" aria-label="Sections">
             <button type="button" onClick={() => scrollTo('how')}>How it works</button>
@@ -419,7 +402,7 @@ export default function LandingPage({
           <Btn size="sm" variant="lime" onClick={onLaunchDashboard}>
             {hasActiveWallet ? (userTag ? `Open ${userTag}` : 'Open wallet') : 'Launch App'}
           </Btn>
-        </motion.div>
+        </div>
       </header>
 
       {/* Hero */}
@@ -432,43 +415,34 @@ export default function LandingPage({
         </Suspense>
 
         <motion.div className="tl-hero__inner" style={reduce ? undefined : { y: heroCopyY, opacity: heroCopyOpacity }}>
-          <motion.p
-            className="tl-badge"
-            initial={reduce ? false : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-          >
+          <p className="tl-badge">
             <span className="tl-badge__dot" /> Stellar &amp; Soroban · Testnet live
-          </motion.p>
+          </p>
           <h1 className="tl-hero__title">
-            <SplitText text="Your name." delay={0.35} />
+            Your name.
             <span className="tl-hero__line2">
-              <SplitText text="Your" delay={0.65} />
+              Your
               &nbsp;
               <WordSwap />
             </span>
           </h1>
-          <Reveal delay={0.9} y={20}>
-            <p className="tl-hero__sub">
-              Send, swap and earn on Stellar with a simple <b>@tag</b> that is yours alone — no 56-character keys,
-              no hassle.
-            </p>
-          </Reveal>
-          <Reveal delay={1.05} y={20} className="tl-hero__cta">
+          <p className="tl-hero__sub">
+            Send, swap and earn on Stellar with a simple <b>@tag</b> that is yours alone — no 56-character keys,
+            no hassle.
+          </p>
+          <div className="tl-hero__cta">
             <Btn onClick={launch}>Launch web app</Btn>
             <Btn variant="ghost" onClick={() => scrollTo('download')}>Get the extension</Btn>
-          </Reveal>
-          <Reveal delay={1.2} y={10}>
-            <p className="tl-hero__note">
-              <span className="tl-hero__hint">Psst — click the coin.</span> Also coming to iOS &amp; Android.
-            </p>
-          </Reveal>
+          </div>
+          <p className="tl-hero__note">
+            <span className="tl-hero__hint">Psst — click the coin.</span> Also coming to iOS &amp; Android.
+          </p>
         </motion.div>
 
-        <Toast className="tl-toast--a" delay={1.5}>
+        <Toast className="tl-toast--a" delay={0.5}>
           <i className="tl-dot tl-dot--lime" /> +250 XLM from <b>@alice</b>
         </Toast>
-        <Toast className="tl-toast--b" delay={1.8}>
+        <Toast className="tl-toast--b" delay={0.7}>
           <i className="tl-dot tl-dot--pink" /> Settled in <b>3.9s</b>
         </Toast>
 
@@ -616,7 +590,7 @@ export default function LandingPage({
               { icon: <IconPrint />, t: 'Passkeys', p: 'Face ID, Touch ID or Windows Hello — no extension, no seed phrase to lose.', c: 'pink' },
               { icon: <IconPuzzle />, t: 'Open standards', p: 'SEP-2 names, SEP-5 recovery, SEP-7 payment links and a SEP-43 dApp provider.', c: 'blue' },
             ].map((f, i) => (
-              <Reveal key={f.t} delay={i * 0.12}>
+              <Reveal key={f.t} delay={i * 0.06}>
                 <TiltCard className={`tl-feature tl-feature--${f.c}`}>
                   <span className="tl-feature__icon">{f.icon}</span>
                   <h3>{f.t}</h3>
@@ -645,7 +619,7 @@ export default function LandingPage({
                 <Btn size="sm" variant="ghost" onClick={onOpenHelp}>Get notified</Btn>
               </TiltCard>
             </Reveal>
-            <Reveal delay={0.12}>
+            <Reveal delay={0.06}>
               <TiltCard className="tl-device tl-device--lime">
                 <span className="tl-device__tag">Live</span>
                 <h3>Web app</h3>
@@ -653,7 +627,7 @@ export default function LandingPage({
                 <Btn size="sm" variant="dark" onClick={launch}>Launch web app</Btn>
               </TiltCard>
             </Reveal>
-            <Reveal delay={0.24}>
+            <Reveal delay={0.12}>
               <TiltCard className="tl-device tl-device--pink">
                 <span className="tl-device__tag">Live</span>
                 <h3>Browser extension</h3>

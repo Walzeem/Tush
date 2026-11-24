@@ -21,5 +21,5 @@
 }
 @keyframes coinFloat { to { transform: translateY(-16px) rotate(6deg); } }
 @media (max-width: 900px) {
-  .coin3d--fallback { place-items: end center; padding: 0 0 8%; }
+  .coin3d--fallback { place-items: center; padding: 0; }
 }

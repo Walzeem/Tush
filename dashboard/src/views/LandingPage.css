@@ -418,10 +418,14 @@
   .tl-step-card p { margin-bottom: 18px; font-size: 1rem; }
 }
 @media (max-width: 900px) {
-  .tl-hero { align-items: flex-start; }
-  .tl-hero__inner { padding: 120px 20px 48vh; }
-  .tl-toast--a { right: 4%; top: auto; bottom: 34%; }
-  .tl-toast--b { right: auto; left: 4%; bottom: 10%; }
+  /* Phones/tablets: the coin gets its own stage under the copy. The copy's bottom
+     padding reserves exactly that space, so the coin and the floating cards can
+     never sit on top of the buttons or the note, however tall the copy wraps. */
+  .tl-hero { --coin-stage: min(58svh, 440px); align-items: flex-start; }
+  .tl-hero__inner { padding: 120px 20px calc(var(--coin-stage) + 12px); }
+  .tl-hero .coin3d { top: auto; bottom: 0; height: var(--coin-stage); }
+  .tl-toast--a { right: 4%; top: auto; bottom: calc(var(--coin-stage) - 56px); }
+  .tl-toast--b { right: auto; left: 4%; bottom: 14px; }
 }
 @media (max-width: 640px) {
   .tl-wrap { padding: 0 16px; }

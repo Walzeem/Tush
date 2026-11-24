@@ -288,7 +288,13 @@ export default function TushCoin3D({ interactionTarget, className }: Props) {
       camera.updateProjectionMatrix();
       const visH = 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
       const visW = visH * camera.aspect;
-      if (camera.aspect < 0.95) {
+      // On phones and tablets the landing CSS gives the canvas its own stage under
+      // the hero copy (it no longer starts at the top), so the coin is centred in it.
+      const staged = host.offsetTop > 0;
+      if (staged) {
+        root.position.set(0, 0, 0);
+        root.scale.setScalar(Math.min(0.78, Math.min(visW, visH) / 5.4));
+      } else if (camera.aspect < 0.95) {
         // Portrait: coin sits in the lower part of the hero
         root.position.set(0, -visH * 0.24, 0);
         root.scale.setScalar(Math.min(0.78, visW / 5.4));
